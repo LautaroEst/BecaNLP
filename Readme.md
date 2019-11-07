@@ -157,5 +157,13 @@ Contar lo que hice hasta ahora
 **Nota importante**: El origen de las redes neuronales viene del hecho de que un sistema como el cerebro puede recibir las señales del exterior, separarlas en partes más simples y decidir en función de esas partes. Esta es la idea principal y más básica que toman los de computación para hacer un algoritmo que toma una decisión. 
 
 
+## 6-11-2019
 
+Hoy comienzo con las simulaciones. Estuve tratando de entender Pytorch pero hay varias cosas con las que tengo problemas:
+
+1. Primero, que todo esto es negocio cuando tenés una GPU. Para bajos recursos esto no funciona muy eficientemente, con lo cual tampoco habría que matarse para hacer las cosas más eficientes.
+
+2. Después, esto cambia muy rápido. No vale la pena hacer un paquete propio de utils o algo por el estilo porque en unos meses lo vas a tener que cambiar y no va a ser muy escalable. Lo que voy a empezar a hacer va a ser una serie de programas que cada uno vengan con sus funciones a parte (o en el mismo notebook o con una carpeta a parte) y que cumplan una función específica. Lo importante es la teoría.
+
+Hay dos efoques a tomar, y ninguno de ellos incluye hacerse un código prolijito en Pytorch o en lo que sea que sirva para siempre: el primero es enfocarse en la teoría y el segundo, en la eficiencia (learning theory vs. sistemas embebidos). Ambos enfoques están buenos y se complementan pero los dos necesitan saber programar. Si voy a hacer teoría, tengo que tener recursos para testear las simulaciones. Pero, en este caso, la programación tiene que servir nada más para testear la teoría. No puedo perder tiempo en hacer cosas escalables o reutilizables a largo plazo y esas cosas que se hacen en embebidos. Por eso, me parece que la posta es hacer programas que cumplan una función específica y listo. 
 
