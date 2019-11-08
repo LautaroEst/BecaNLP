@@ -167,3 +167,23 @@ Hoy comienzo con las simulaciones. Estuve tratando de entender Pytorch pero hay 
 
 Hay dos efoques a tomar, y ninguno de ellos incluye hacerse un código prolijito en Pytorch o en lo que sea que sirva para siempre: el primero es enfocarse en la teoría y el segundo, en la eficiencia (learning theory vs. sistemas embebidos). Ambos enfoques están buenos y se complementan pero los dos necesitan saber programar. Si voy a hacer teoría, tengo que tener recursos para testear las simulaciones. Pero, en este caso, la programación tiene que servir nada más para testear la teoría. No puedo perder tiempo en hacer cosas escalables o reutilizables a largo plazo y esas cosas que se hacen en embebidos. Por eso, me parece que la posta es hacer programas que cumplan una función específica y listo. 
 
+
+
+## 8-11-2019
+
+Ayer fui a verlo a Leo y me dijo que estaba muy bien lo que hice hasta ahora. Parece que la metodología "lento pero consistente" anda funcionando bien. 
+
+Hasta ahora implementé Word2Vec en una manera muy rudimentaria, por lo que habría que mejorar eso. Por eso, el TO DO de este momento sería:
+
+* Repasar teoría de Word2Vec, modelos de lenguaje, etc. y empezar a hacer un resumen sobre eso.
+
+* Tratar de unir esa teoría con lo de antes (word embeddings, vector representation y todo eso). 
+
+* Tratar de armase un paquete para probar los modelos que se van haciendo. Esto incluiría:
+
+    * Los datasets más populares o los usados como estándar
+    * Algunos datasets (estándares en la medida de lo posible)
+    * Las formas de preprocesamiento posibles para levantar esos datasets (las más populares primero)
+    * Las formas de medir los resultados (perplexity, analogía y si hay alguna otra forma, también).
+    
+* Obtener mejores resultados!! Supongo que voy a tener que leer muchos papers para esto...
