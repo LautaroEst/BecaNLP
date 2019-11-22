@@ -63,6 +63,7 @@ https://pytorch.org/tutorials/beginner/text_sentiment_ngrams_tutorial.html
 2. Pytorch-NLP:
 https://github.com/PetrochukM/PyTorch-NLP
 
-
+3. Khipu 2019:
+https://github.com/khipu-ai/practicals-2019
 
 
