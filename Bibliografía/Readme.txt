@@ -49,6 +49,7 @@ https://pytorch.org/tutorials/beginner/deep_learning_nlp_tutorial.html
 
 
 Datasets:
+
 https://lionbridge.ai/datasets/the-best-25-datasets-for-natural-language-processing/
 https://lionbridge.ai/articles/top-10-natural-language-processing-nlp-training-data-services/
 
@@ -65,5 +66,10 @@ https://github.com/PetrochukM/PyTorch-NLP
 
 3. Khipu 2019:
 https://github.com/khipu-ai/practicals-2019
+
+4. Learning Advanced Python references:
+Michal Jaworski, Tarek Ziade - Expert Python Programming (2019)
+J. Burton Browning, Marty Alchin - Pro Python 3 Features and Tools for Professional Development (2019)
+Brett Slatkin - Effective Python: 59 Specific Ways to Write Better Python (2015)
 
 
