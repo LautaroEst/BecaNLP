@@ -12,33 +12,27 @@ class AGNewsDataset(object):
     token_sep = '<TS>'
     special_tokens = [token_pad, token_unk]
     
-    def __init__(self, root, train=True, use_test_tokens=False):
-        if not os.path.exists(root):
-            raise IOError('{} is not a path'.format(root))
-        if root[-1] != '/':
-            self.root = root + '/'
-        else:
-            self.root = root
+    def __init__(self, root, train=True, use_test_tokens=True, cutoff_freq=0):
         
+        if not os.path.exists(root):
+            raise IOError('Carpeta {} no encontrada'.format(root))
+        self.root = root + '/' if root[-1] != '/' else root
+        
+        print('Buscando archivos train.csv test.csv...')
         self.train_path = '{}train.csv'.format(self.root)
         self.test_path = '{}test.csv'.format(self.root)
-        self.preprocessed_train_path = '{}preprocessed_train.csv'.format(self.root)
-        self.preprocessed_test_path = '{}preprocessed_test.csv'.format(self.root)
-        if not (os.path.exists(self.preprocessed_train_path) and os.path.exists(self.preprocessed_test_path)):
-            if not (os.path.exists(self.train_path) and os.path.exists(self.test_path)):
-                raise IOError('Archivos train.csv y test.csv no encontrados')
-            self._preprocess_data()
+        if not os.path.exists(self.train_path):
+            raise IOError('Archivo train.csv no encontrado en el directorio {}'.format(self.train_path))
+        elif not os.path.exists(self.train_path):
+            raise IOError('Archivo test.csv no encontrado en el directorio {}'.format(self.test_path))
+        
+        print('Preprocesando el corpus...')
+        self._full_vocabulary = self._get_vocabulary(use_test_tokens)
+        full_data = self._preprocess_data(cutoff_freq=cutoff_freq)
+        
         
         self._data = pd.read_csv(self.preprocessed_train_path) if train else pd.read_csv(self.preprocessed_test_path)
-        
-        max_len = 0
-        for index, row in self._data.iterrows():
-            lenght = len(self._string_to_tokens(row['Title']))
-            if max_len < lenght:
-                max_len = lenght
-        self.max_len = max_len
-        
-        self.vocabulary = self._get_vocabulary(use_test_tokens=use_test_tokens)
+        self.max_len = _get_max_len()
         
         
         #### TO DO: #####
@@ -54,6 +48,16 @@ class AGNewsDataset(object):
             self._data.iloc[index] = row
         ##################
         
+    
+    def _get_max_len(self):
+        max_len = 0
+        for index, row in self._data.iterrows():
+            lenght = len(self._string_to_tokens(row['Title']))
+            if max_len < lenght:
+                max_len = lenght
+        return max_len
+
+    
     def __getitem__(self, idx):
                 
         if isinstance(idx,torch.Tensor):
@@ -82,28 +86,36 @@ class AGNewsDataset(object):
         return len(self._data)
     
 
-    def _preprocess_data(self):
+    def _preprocess_data(self, use_test_tokens=True, cutoff_freq=None):
         """
         Toma los archivos que componen el corpus, los preprocesa
         y devuelve en dos archivos .csv (train y test) las muestras
         preprocesadas.
         """
-        print('Creando preprocessed_train.csv y preprocessed_test.csv...')
-        for filename, pp_filename in [(self.train_path, self.preprocessed_train_path), (self.test_path, self.preprocessed_test_path)]:
+        
+
+        
+        full_data_df = pd.DataFrame(columns=['Text','Class Label'])
+        for filename in [self.train_path, self.test_path]:
             df = pd.read_csv(filename,header=None)
-            with open(pp_filename, 'w+') as pp_f:
-                pp_f.write('Title,Class label\n')
-                for index, row in df.iterrows():
-                    title = re.sub( r'"', r"'", row[1])
-                    new_row = re.sub( r' ', self.token_sep, '\"{0}\",{1:}\n'.format(title,int(row[0])) )
-                    pp_f.write(new_row)
-        print('OK!')
+            for index, row in df.iterrows():
+                text = re.sub( r'"', r"'", row[1])
+                text = re.sub( r' ', self.token_sep, text)
+                full_data_df = full_data_df.append({'Text': text, 'Class Label': int(row[0])}, ignore_index=True)
+                text_list = self._string_to_tokens(text)
+                new_text = ''
+                for word in text:
+                    if self._full_vocabulary.get_freq(word) < cutoff_freq:
+                        new_text = token_sep.join([new_text, self.token_unk])
+                    else:
+                        new_text = token_sep.join([new_text, word])
+        
+        vocabulary = _get_vocabulary(use_test_tokens=use_test_tokens, cutoff_freq=cutoff_freq)
         
         
     def _get_vocabulary(self, use_test_tokens=False):
         
         vocabulary = AGNewsVocabulary()
-        
         
         for token in self.special_tokens:
             idx = vocabulary.add_token(token)
@@ -120,9 +132,9 @@ class AGNewsDataset(object):
                 title = self._string_to_tokens(title)
                 for word in title:
                     vocabulary.add_token(word)
-            
+
         return vocabulary
-    
+        
     def _string_to_tokens(self,string):
         return string.split(self.token_sep)
 

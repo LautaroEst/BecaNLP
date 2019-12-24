@@ -110,7 +110,7 @@ def SGDTrainModel(model, data, epochs=1, learning_rate=1e-2, sample_loss_every=1
                     
                     if check_on_train:
                         num_correct_train, num_samples_train = CheckAccuracy(train_dataloader, model, device, input_dtype, target_dtype)
-                        print('Accuracy on train dataset: {}/{} ({:2.f}%)'.format(num_correct_train, num_samples_train, 100 * float(num_correct_train) / num_samples_train))
+                        print('Accuracy on train dataset: {}/{} ({:.2f}%)'.format(num_correct_train, num_samples_train, 100 * float(num_correct_train) / num_samples_train))
                         print()
                     else:
                         print()
@@ -121,10 +121,10 @@ def SGDTrainModel(model, data, epochs=1, learning_rate=1e-2, sample_loss_every=1
         
         print('Exiting training...')
         #num_correct_val, num_samples_val = CheckAccuracy(val_dataloader, model, device, input_dtype, target_dtype)
-        print('Final accuracy registered on validation dataset: {:.2f}%'.format(100 * float(num_correct_val) / num_samples_val) )
+        print('Final accuracy registered on validation dataset: {}/{} ({:.2f}%)'.format(num_correct_val, num_samples_val, 100 * float(num_correct_val) / num_samples_val) )
         if check_on_train:
             #num_correct_train, num_samples_train = CheckAccuracy(train_dataloader, model, device, input_dtype, target_dtype)
-            print('Final accuracy registered on train dataset: {}/{} '.format(num_correct_train, num_samples_train))
+            print('Final accuracy registered on train dataset: {}/{} ({:.2f}%)'.format(num_correct_train, num_samples_train, 100 * float(num_correct_train) / num_samples_train))
             
         return performance_history
 
