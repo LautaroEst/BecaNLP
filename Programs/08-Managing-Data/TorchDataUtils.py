@@ -55,7 +55,7 @@ def CheckAccuracy(loader, model, device, input_dtype, target_dtype):
         return num_correct, num_samples
         
 
-def SGDTrainModel(model, data, epochs=1, learning_rate=1e-2, sample_loss_every=100, check_on_train=False):
+def SGDTrainModel(model, data, epochs=1, learning_rate=1e-2, sample_loss_every=100, check_on_train=False, verbose=True):
     
     try:
         input_dtype = data['input_dtype'] 
@@ -101,14 +101,15 @@ def SGDTrainModel(model, data, epochs=1, learning_rate=1e-2, sample_loss_every=1
                 optimizer.step()
 
                 if (e * batch_size + t) % sample_loss_every == 0:
-                    print('Epoch: {}, Batch number: {}'.format(e, t))
                     num_correct_val, num_samples_val = CheckAccuracy(val_dataloader, model, device, input_dtype, target_dtype)
-                    performance_history['iter'].append(t)
+                    performance_history['iter'].append(e * batch_size + t)
                     performance_history['loss'].append(loss.item())
                     performance_history['accuracy'].append(float(num_correct_val) / num_samples_val)
-                    print('Accuracy on validation dataset: {}/{} ({:.2f}%)'.format(num_correct_val, num_samples_val, 100 * float(num_correct_val) / num_samples_val))
+                    if verbose:
+                        print('Epoch: {}, Batch number: {}'.format(e, t))
+                        print('Accuracy on validation dataset: {}/{} ({:.2f}%)'.format(num_correct_val, num_samples_val, 100 * float(num_correct_val) / num_samples_val))
                     
-                    if check_on_train:
+                    if check_on_train and verbose:
                         num_correct_train, num_samples_train = CheckAccuracy(train_dataloader, model, device, input_dtype, target_dtype)
                         print('Accuracy on train dataset: {}/{} ({:.2f}%)'.format(num_correct_train, num_samples_train, 100 * float(num_correct_train) / num_samples_train))
                         print()
@@ -120,10 +121,9 @@ def SGDTrainModel(model, data, epochs=1, learning_rate=1e-2, sample_loss_every=1
     except KeyboardInterrupt:
         
         print('Exiting training...')
-        #num_correct_val, num_samples_val = CheckAccuracy(val_dataloader, model, device, input_dtype, target_dtype)
         print('Final accuracy registered on validation dataset: {}/{} ({:.2f}%)'.format(num_correct_val, num_samples_val, 100 * float(num_correct_val) / num_samples_val) )
         if check_on_train:
-            #num_correct_train, num_samples_train = CheckAccuracy(train_dataloader, model, device, input_dtype, target_dtype)
+            num_correct_train, num_samples_train = CheckAccuracy(train_dataloader, model, device, input_dtype, target_dtype)
             print('Final accuracy registered on train dataset: {}/{} ({:.2f}%)'.format(num_correct_train, num_samples_train, 100 * float(num_correct_train) / num_samples_train))
             
         return performance_history
