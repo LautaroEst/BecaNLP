@@ -187,3 +187,11 @@ Hasta ahora implementé Word2Vec en una manera muy rudimentaria, por lo que habr
     * Las formas de medir los resultados (perplexity, analogía y si hay alguna otra forma, también).
     
 * Obtener mejores resultados!! Supongo que voy a tener que leer muchos papers para esto...
+
+## 15-01-2020 (Dos meses después...)
+
+Holiiiiiiiis!! NLP De nuevo en acción. Rendí economía y volví de vacaciones, así que ya puedo ponerme de vuelta con esto. 
+
+Estuve probando varias cosas en el medio que no anoté, pero ya tengo más o menos armadas algunas funciones que no sé si funcionan porque no puedo visualizar bien los resultados. La idea, después de hablar con mis viejos un poco, va a ser encontrar un paper baseline que me sirva para comparar mis resultados. Por ahora encontré el de [Baroni et al. 2014](https://www.aclweb.org/anthology/P14-1023/) que parece ser el más conveniente, aunque bastante viejo. Vamos a tratar de hacer eso y después volvemos.
+
+
