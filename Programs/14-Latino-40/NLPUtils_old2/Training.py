@@ -362,7 +362,7 @@ class Word2vecTrainer(object):
             
     def GetCloseVectors(self, word_list, firsts=10):
         
-        embeddings = self.model.module.emb.weight.data
+        embeddings = self.model.emb.weight.data
         vocab = self.dataloader.dataset.vocabulary
         distance = torch.nn.CosineSimilarity()
 

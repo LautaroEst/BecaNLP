@@ -24,8 +24,6 @@ class Vocabulary(object):
             for token in doc:
                 freqs_dict[token] += 1
         freqs = np.array(list(freqs_dict.values()))
-        if cutoff_freq == 0:
-            return 
         mask = freqs > cutoff_freq
         corpus_words = {idx: tk for idx, tk in enumerate(itertools.compress(corpus_words,mask))}
         freqs = {idx: freq for idx, freq in enumerate(freqs[mask])}
@@ -68,7 +66,7 @@ class Vocabulary(object):
         if self.current > self.max_idx:
             raise StopIteration
         else:
-            token = self.tokens[self.current]
+            token = self._idx_to_tk[self.current]
             self.current += 1
             return token
 

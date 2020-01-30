@@ -2,134 +2,132 @@ import pandas as pd
 import torch
 from torch.utils.data import Dataset, DataLoader, sampler
 import torch.nn as nn
+import numpy as np
 
-
+import itertools
 
 class Vocabulary(object):
     """Class to process text and extract vocabulary for mapping"""
 
-    def __init__(self):
-
-        self._token_to_idx = {}
-        self._idx_to_token = {}
-        self._idx_to_freq = {}
-
-    def add_token(self, token):
+    def __init__(self, tokens_dict={}, frequencies_dict={}):
         
-        if token in self._token_to_idx:
-            index = self._token_to_idx[token]
-            self._idx_to_freq[index] += 1
-        else:
-            index = len(self._token_to_idx)
-            self._token_to_idx[token] = index
-            self._idx_to_token[index] = token
-            self._idx_to_freq[index] = 1
-        return index
-    
+        self._idx_to_tk = tokens_dict
+        self._tk_to_idx = {tk: idx for idx, tk in tokens_dict.items()}
+        self._idx_to_freq = frequencies_dict
+        self.max_idx = len(self)
+        
+    @classmethod
+    def from_corpus(cls, corpus, cutoff_freq=0):
+        corpus_words = sorted(list(set([item for sublist in corpus for item in sublist])))
+        freqs_dict = {word: 0 for word in corpus_words}
+        for doc in corpus:
+            for token in doc:
+                freqs_dict[token] += 1
+        freqs = np.array(list(freqs_dict.values()))
+        mask = freqs > cutoff_freq
+        corpus_words = {idx: tk for idx, tk in enumerate(itertools.compress(corpus_words,mask))}
+        freqs = {idx: freq for idx, freq in enumerate(freqs[mask])}
+        return cls(corpus_words, freqs)
+
     def index_to_token(self, index):
-        
-        if not isinstance(index, list):
-            if not isinstance(index, int):
-                raise NameError("'index' must be an integer or list of integers")
-            if index not in self._idx_to_token:
-                raise KeyError('the index {} exeeds the Vocabulary lenght'.format(index))
-            return self._idx_to_token[index]
-        
-        tokens = []
-        for idx in index:
-            if not isinstance(idx, int):
-                raise NameError("{} is not an integer".format(idx))
-            if idx not in self._idx_to_token:
-                raise KeyError('the index {} exeeds the Vocabulary lenght'.format(idx))
-            tokens.append(self._idx_to_token[idx])
-        return tokens
+        return self._idx_to_tk[index]
 
     def token_to_index(self, token):
+        return self._tk_to_idx[token]
         
-        if not isinstance(token, list):
-            if not isinstance(token, str):
-                raise NameError("'token' must be a string or list of strings")
-            if token not in self._token_to_idx:
-                raise KeyError('the token {} is not in the Vocabulary'.format(token))
-            return self._token_to_idx[token]
-        
-        indeces = []
-        for tk in token:
-            if not isinstance(tk, str):
-                raise NameError("'token' must be a string or list of strings")
-            if tk not in self._token_to_idx:
-                raise KeyError('the token {} is not in the Vocabulary'.format(tk))
-            indeces.append(self._token_to_idx[tk])
-        return indeces
-    
     def get_freq(self, tk_or_idx):
         
         if isinstance(tk_or_idx, int):
-            if tk_or_idx not in self._idx_to_token:
-                raise KeyError('the index {} exeeds the Vocabulary lenght'.format(tk_or_idx))
             freq = self._idx_to_freq[tk_or_idx]
         elif isinstance(tk_or_idx, str):
-            if tk_or_idx not in self._token_to_idx:
-                freq = 0
-            else:
-                freq = self._idx_to_freq[self._token_to_idx[tk_or_idx]]
+            freq = 0 if tk_or_idx not in self._tk_to_idx else self._idx_to_freq[self._tk_to_idx[tk_or_idx]]
         else:
             raise KeyError('{} must be either integer or string'.format(tk_or_idx))
-        
         return freq
 
     def __str__(self):
         return "<Vocabulary(size={})>".format(len(self))
 
     def __len__(self):
-        return len(self._token_to_idx)
+        return len(self._idx_to_tk)
     
-    def __getitem__(self,idx):
-        return self.index_to_token(idx)
+    def __getitem__(self,tk_or_idx):
+        if isinstance(tk_or_idx, int):
+            return self.index_to_token(tk_or_idx)
+        if isinstance(tk_or_idx, str):
+            return self.token_to_index(tk_or_idx)
+        raise KeyError('{} must be either integer or string'.format(tk_or_idx))
+        
+    def __iter__(self):
+        self.current = 0
+        return self
+    
+    def __next__(self):
+        if self.current >= self.max_idx:
+            raise StopIteration
+        else:
+            token = self._idx_to_tk[self.current]
+            self.current += 1
+            return token
 
-
+    def __contains__(self,key):
+        return key in self._tk_to_idx
+    
+    
 class Word2VecSamples(Dataset):
     
-    no_token = '<NT>'
+    unk_token = '<UNK>'
     
-    def __init__(self, corpus, window_size=2):
+    def samples_generator(self, doc):
+        for t, token in enumerate(doc):
+            if token in self.vocabulary:
+                len_doc = len(doc)
+                cond1 = max(-1,t-self.window_size) == -1
+                cond2 = min(t+self.window_size, len_doc) == len_doc
+                if cond1 and cond2:
+                    context = itertools.chain(doc[:t],doc[t+1:])
+                if cond1 and not cond2:
+                    context = itertools.chain(doc[:t],doc[t+1:t+self.window_size+1])
+                if cond2 and not cond1:
+                    context = itertools.chain(doc[t-self.window_size:t],doc[t+1:])
+                if not cond1 and not cond2:
+                    context = itertools.chain(doc[t-self.window_size:t],doc[t+1:t+self.window_size+1])
+
+                context_list = [self.vocabulary.token_to_index(tk) for tk in context if tk in self.vocabulary]
+                if len(context_list) != 0:
+                    yield (self.vocabulary.token_to_index(token), context_list)
+    
+
+    def __init__(self, corpus, window_size=2, cutoff_freq=0):
         
         # Obtengo el vocabulario a partir del corpus ya tokenizado:
-        self.corpus = corpus
-        self.vocabulary = Vocabulary()
-        for doc in corpus:
-            for token in doc:
-                self.vocabulary.add_token(token)
-                
+        self.vocabulary = Vocabulary.from_corpus(corpus,cutoff_freq=cutoff_freq)
+    
         # Obtengo el contexto a partir del corpus:
-        self.window_size = window_size
-        self.data = pd.DataFrame({'word': [token for doc in corpus for token in doc],
-                                  'context': [[self.no_token for j in range(i-window_size, max(0,i-window_size))] + \
-                                              doc[max(0,i-window_size):i] + \
-                                              doc[i+1:min(i+window_size+1, len(doc))] + \
-                                              [self.no_token for j in range(min(i+window_size+1, len(doc)),i+window_size+1)] \
-                                              for doc in corpus for i in range(len(doc))]
-                                 })
         self.padding_idx = len(self.vocabulary)
+        self.window_size = window_size
+        
+        word_indeces = []
+        word_contexts = []
+        for doc in corpus:
+            gen = self.samples_generator(doc)
+            for word_index, word_context in gen:
+                word_indeces.append(word_index)
+                padd_num = 2 * window_size - len(word_context)
+                if padd_num > 0:
+                    word_contexts.append(word_context + [self.padding_idx for i in range(padd_num)])
+                else:
+                    word_contexts.append(word_context)
+        
+        self.word_indeces = torch.tensor(word_indeces,dtype=torch.long)
+        self.context_indeces = torch.tensor(word_contexts,dtype=torch.long)
         
     def __getitem__(self,idx):
-        if type(idx) == torch.Tensor:
-            idx = idx.item()
-        
-        word_vector = torch.tensor(self.vocabulary.token_to_index(self.data['word'].iloc[idx]), dtype=torch.long)
-        context_vector = torch.zeros(2 * self.window_size, dtype=torch.long)
-        for i, token in enumerate(self.data['context'].iloc[idx]):
-            if token == self.no_token:
-                context_vector[i] = self.padding_idx
-            else:
-                context_vector[i] = self.vocabulary.token_to_index(token)
-            
-        return word_vector, context_vector        
+        return self.word_indeces[idx], self.context_indeces[idx,:]
     
     def __len__(self):
-        return len(self.data)
-    
-    
+        return len(self.word_indeces)
+
     
     
 class CBOWModel(nn.Module):
@@ -144,8 +142,9 @@ class CBOWModel(nn.Module):
         return self.out(embedding)
     
     def loss(self,scores,target):
-        lf = nn.CrossEntropyLoss()
+        lf = nn.CrossEntropyLoss(reduction='sum')
         return lf(scores,target)
+        
         
         
 class SkipGramModel(nn.Module):
@@ -160,8 +159,10 @@ class SkipGramModel(nn.Module):
         return self.out(self.emb(x))
     
     def loss(self,scores,target):
-        lf = nn.CrossEntropyLoss(ignore_index=self.vocab_size)
-        if target.size() != torch.Size([2]):
-            context_size = target.size(1)
-            scores = scores.view(-1,self.vocab_size,1).repeat(1,1,context_size)
+        lf = nn.CrossEntropyLoss(ignore_index=self.vocab_size,reduction='sum')
+        scores = scores.view(-1,self.vocab_size,1).repeat(1,1,target.size(1))
         return lf(scores,target)
+    
+    
+    
+    

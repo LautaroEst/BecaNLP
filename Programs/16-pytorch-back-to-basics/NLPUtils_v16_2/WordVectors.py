@@ -100,7 +100,7 @@ class Word2VecSamples(Dataset):
                     yield (self.vocabulary.token_to_index(token), context_list)
     
 
-    def __init__(self, corpus, window_size=2, cutoff_freq=0):
+    def __init__(self, corpus, device, window_size=2, cutoff_freq=0):
         
         # Obtengo el vocabulario a partir del corpus ya tokenizado:
         self.vocabulary = Vocabulary.from_corpus(corpus,cutoff_freq=cutoff_freq)
@@ -121,8 +121,8 @@ class Word2VecSamples(Dataset):
                 else:
                     word_contexts.append(word_context)
         
-        self.word_indeces = torch.tensor(word_indeces,dtype=torch.long)
-        self.context_indeces = torch.tensor(word_contexts,dtype=torch.long)
+        self.word_indeces = torch.tensor(word_indeces,dtype=torch.long,device=device)
+        self.context_indeces = torch.tensor(word_contexts,dtype=torch.long,device=device)
         
     def __getitem__(self,idx):
         return self.word_indeces[idx], self.context_indeces[idx,:]

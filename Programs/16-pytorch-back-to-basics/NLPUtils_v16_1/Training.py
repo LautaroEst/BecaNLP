@@ -1,7 +1,6 @@
 import torch
 from torch.utils.data import DataLoader, sampler
 import torch.optim as optim
-import torch.nn as nn
 from .WordVectors import *
 import numpy as np
 
@@ -9,10 +8,14 @@ import numpy as np
 class ModelTrainer(object):
     
     def __init__(self,
+                 model,
                  train_dataset,
                  test_dataset,
                  batch_size=64,
                  val_size=.02):
+        
+        # Model:
+        self.model = model
         
         # Data:
         tr, val, te = self.generate_data_batches(train_dataset, test_dataset,batch_size,val_size)
@@ -73,65 +76,40 @@ class ModelTrainer(object):
         return train_dataloader, val_dataloader, test_dataloader
     
     
-    def InitModel(self, model, state_dict=None, device='cpu'):
-        
+    def InitParameters(self,from_pretrained=None,use_gpu=None, **kwargs):
+       
         # Defino el dispositivo sobre el cual trabajar:
-        if device is None:
+        if use_gpu == 0:
+            self.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
+        elif use_gpu == 1:
+            self.device = torch.device('cuda:1') if torch.cuda.is_available() else torch.device('cpu')
+        elif use_gpu is None:
             self.device = torch.device('cpu')
-            print('No se seleccionó ningún dispositivo de entrenamiento. Se asigna la cpu')
-        elif device == 'cpu':
-            self.device = torch.device('cpu')
-            print('Dispositivo seleccionado: cpu')
-        elif device == 'cuda:0' or device == 'cuda:1':
-            if torch.cuda.is_available():
-                self.device = torch.device(device)
-                print('Dispositivo seleccionado: {}'.format(device))
-            else:
-                self.device = torch.device('cpu')
-                print('No se dispone de GPUs. Se asigna como dispositivo de entrenamiento la cpu')
-        else:
-            raise TypeError('No se seleccionó un dispositivo válido')
-            
-        # Defino el modelo:
-        self.model = model
+    
+        if from_pretrained is None:
+            pass#state_dict = 
         
-        # Inicializo con los parámetros de state_dict si hubiera:
-        if state_dict is not None:
-            self.model.load_state_dict(state_dict)
-        
-        # Copio el modelo al dispositivo:
+        self.model.init_parameters(kwargs)
         self.model = self.model.to(device=self.device)
 
-    def SaveModel(self,file):
         
-        try:
-            torch.save(self.model.state_dict(),file)
-            print('Embeddings saved to file {}'.format(file))
-        except:
-            print('Embeddings could not be saved to file')
-        
-        
-    def Train(self, algorithm='SGD', epochs=1, sample_loss_every=100, check_on_train=False, **kwargs):
-        
-        if algorithm == 'SGD':
-            optimizer = optim.SGD(self.model.parameters(), **kwargs)
-        elif algorithm == 'Adam':
-            optimizer = optim.Adam(self.model.parameters(), **kwargs)
-        self.model.train()
+    def SGDTrain(self, epochs=1, learning_rate=1e-1, sample_loss_every=100, check_on_train=False):
         
         if self.first_time:
             print('Starting training...')
-            self.loss_history = {'iter': [], 'loss': []}
             n_iter = 0
+            self.performance_history = {'iter': [], 'loss': [], 'accuracy': []}
             self.first_time = False
         else:
-            n_iter = self.loss_history['iter'][-1]
+            n_iter = self.performance_history['iter'][-1]
             print('Resuming training...')
         
-        print('Optimization method: {}'.format(algorithm))
-        print('Learning Rate: {:.2g}'.format(kwargs['lr']))
+        optimizer = optim.SGD(self.model.parameters(), lr=learning_rate)
+        
+        print('Optimization method: Stochastic Gradient Descent')
+        print('Learning Rate: {:.2g}'.format(learning_rate))
         print('Number of epochs: {}'.format(epochs))
-        print('Running on device ({})'.format(self.device))
+        print('Running on device "{}"'.format(self.device))
         print()
         
         try:
@@ -215,90 +193,93 @@ class ModelTrainer(object):
         print('Final accuracy on test set: {}/{} ({}%)'.format(total_corrects,total_samples,total_performance))
 
 
+    
+    
 class Word2vecTrainer(object):
     
     """
         Clase para entrenar word embeddings. 
+        Algoritmos implementados: SGD
     
     """
     
     def __init__(self,
                  corpus,                 # Corpus de entrenamiento (debe ser una lista de listas de strings).
                  cutoff_freq=1,          # Descartar palabras cuya frecuencia sea menor o igual a este valor.
+                 lm='CBOW',              # Modelo de lenguaje a utilizar.
                  window_size=2,          # Tamaño de la ventana.
-                 batch_size=64):         # Tamaño del batch.
+                 batch_size=64,          # Tamaño del batch.
+                 embedding_dim=100,      # Dimensión de los word embeddings.
+                 use_gpu=None):          # Usar gpu (None para usar cpu, 0 para cuda:0 y 1 para cuda:1)
         
         self.cutoff_freq = cutoff_freq
+        self.lm = lm
         self.window_size = window_size
+        self.embedding_dim = embedding_dim
         
+        # Defino el dispositivo sobre el cual trabajar:
+        if use_gpu == 0:
+            self.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
+        elif use_gpu == 1:
+            self.device = torch.device('cuda:1') if torch.cuda.is_available() else torch.device('cpu')
+        elif use_gpu is None:
+            self.device = torch.device('cpu')
+    
         # Obtengo los batches de muestras:
-        dataset = Word2VecSamples(corpus, window_size=window_size, cutoff_freq=cutoff_freq)
+        dataset = Word2VecSamples(corpus, device=self.device, lang_model=lm, window_size=window_size, cutoff_freq=cutoff_freq)
+        vocab_size = len(dataset.vocabulary)    
         samples_idx = torch.randperm(len(dataset))
         my_sampler = lambda indices: sampler.SubsetRandomSampler(indices)
         self.dataloader = DataLoader(dataset, batch_size=batch_size, sampler=my_sampler(samples_idx))
+
+        # Defino el modelo:
+        if lm == 'CBOW':
+            self.model = CBOWModel(vocab_size, embedding_dim)
+            self.idx = (1, 0)
+        elif lm == 'SkipGram':
+            self.model = SkipGramModel(vocab_size, embedding_dim)
+            self.idx = (0, 1)
+        else:
+            raise TypeError('El modelo de entrenamiento no es válido.')
+
+        self.first_time = True
         self.batch_len = len(self.dataloader)
         
-        self.vocab_size = len(dataset.vocabulary)    
-        self.first_time = True
-        
         print('Word2vec trainer created:')
+        print('Model used: {}'.format(self.lm))
         print('Window size: {}'.format(window_size))
+        print('Embedding dimension: {}'.format(embedding_dim))
         print('Number of samples: {}'.format(len(dataset)))
-        print('Vocabulary Size: {}'.format(self.vocab_size))
+        print('Vocabulary Size: {}'.format(vocab_size))
         print('Number of batches: {}'.format(self.batch_len))
         print('Number of samples per batch: {}'.format(batch_size))
         print()
 
         
-    def InitModel(self, model='CBOW', state_dict=None, device='cpu', paralelize=False, **kwargs):
+    def InitParameters(self,params_dict=None,requires_grad_dict=None):
         
-        # Defino el dispositivo sobre el cual trabajar:
-        if device is None:
-            self.device = torch.device('cpu')
-            print('No se seleccionó ningún dispositivo de entrenamiento. Se asigna la cpu')
-        elif device == 'cpu':
-            self.device = torch.device('cpu')
-            print('Dispositivo seleccionado: cpu')
-        elif device == 'cuda:0' or device == 'cuda:1':
-            if torch.cuda.is_available():
-                self.device = torch.device(device)
-                print('Dispositivo seleccionado: {}'.format(device))
-            else:
-                self.device = torch.device('cpu')
-                print('No se dispone de GPUs. Se asigna como dispositivo de entrenamiento la cpu')
-        else:
-            raise TypeError('No se seleccionó un dispositivo válido')
+        if params_dict is not None:
+            state_dict = self.model.state_dict().keys()
+            new_state_dict = {}
+            for p in state_dict:
+                try:
+                    new_state_dict[p] = params_dict[p]
+                    new_state_dict[p].requires_grad = requires_grad_dict[p]
+                except KeyError:
+                    new_state_dict[p] = state_dict[p]
+                    new_state_dict[p].requires_grad = state_dict[p].requires_grad
+            self.model.load_state_dict(new_state_dict)
             
-        # Defino el modelo:
-        try:
-            self.embedding_dim = kwargs['embedding_dim']
-        except KeyError:
-            print('Dimensión del espacio de los embeddings seleccionada automáticamente en 100.')
-            self.embedding_dim = 100
-        print('Dimensión del espacio de los embeddings: {}'.format(self.embedding_dim))
+        if requires_grad_dict is not None:
+            for p, param in zip(state_dict,self.model.parameters()):
+                try:
+                    param.requires_grad = requires_grad_dict[p]
+                except KeyError:
+                    param.requires_grad = state_dict[p]
         
-        if model == 'CBOW':
-            self.model = CBOWModel(self.vocab_size, self.embedding_dim)
-            self.idx = (1, 0)
-        elif model == 'SkipGram':
-            self.model = SkipGramModel(self.vocab_size, self.embedding_dim)
-            self.idx = (0, 1)
-        else:
-            raise TypeError('El modelo de entrenamiento no es válido.')
-        
-        # Inicializo con los parámetros de state_dict si hubiera:
-        if state_dict is not None:
-            self.model.load_state_dict(state_dict)
-        
-        # Copio el modelo al dispositivo:
-        if torch.cuda.device_count() > 1 and paralelize:
-            self.model = nn.DataParallel(self.model)
-            self.loss_fn = self.model.module.loss
-        else:
-            self.loss_fn = self.model.loss
         self.model = self.model.to(device=self.device)
         
-    def SaveModel(self,file):
+    def SaveParameters(self,file):
         
         try:
             torch.save(self.model.state_dict(),file)
@@ -307,14 +288,10 @@ class Word2vecTrainer(object):
             print('Embeddings could not be saved to file')
             
         
-    def Train(self, algorithm='SGD', epochs=1, sample_loss_every=100, **kwargs):
+    def SGDTrain(self, epochs=1, learning_rate=1e-2, sample_loss_every=100):
         
         idx_x, idx_y = self.idx
-        
-        if algorithm == 'SGD':
-            optimizer = optim.SGD(self.model.parameters(), **kwargs)
-        elif algorithm == 'Adam':
-            optimizer = optim.Adam(self.model.parameters(), **kwargs)
+        optimizer = optim.SGD(self.model.parameters(), lr=learning_rate)
         self.model.train()
         
         if self.first_time:
@@ -326,8 +303,8 @@ class Word2vecTrainer(object):
             n_iter = self.loss_history['iter'][-1]
             print('Resuming training...')
         
-        print('Optimization method: {}'.format(algorithm))
-        print('Learning Rate: {:.2g}'.format(kwargs['lr']))
+        print('Optimization method: Stochastic Gradient Descent')
+        print('Learning Rate: {:.2g}'.format(learning_rate))
         print('Number of epochs: {}'.format(epochs))
         print('Running on device ({})'.format(self.device))
         print()
@@ -335,12 +312,12 @@ class Word2vecTrainer(object):
         try:
             for e in range(epochs):
                 for t, sample in enumerate(self.dataloader):
-                    x = sample[idx_x].to(device=self.device)
-                    y = sample[idx_y].to(device=self.device)
+                    x = sample[idx_x]
+                    y = sample[idx_y]
                     
                     optimizer.zero_grad() # Llevo a cero los gradientes de la red
                     scores = self.model(x) # Calculo la salida de la red
-                    loss = self.loss_fn(scores,y) # Calculo el valor de la loss
+                    loss = self.model.loss(scores,y) # Calculo el valor de la loss
                     loss.backward() # Calculo los gradientes
                     optimizer.step() # Actualizo los parámetros
 
@@ -362,7 +339,7 @@ class Word2vecTrainer(object):
             
     def GetCloseVectors(self, word_list, firsts=10):
         
-        embeddings = self.model.module.emb.weight.data
+        embeddings = self.model.emb.weight.data
         vocab = self.dataloader.dataset.vocabulary
         distance = torch.nn.CosineSimilarity()
 
