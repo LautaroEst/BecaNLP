@@ -1,10 +1,10 @@
-import pandas as pd
 import torch
-from torch.utils.data import Dataset, DataLoader, sampler
 import torch.nn as nn
-import numpy as np
+from torch.utils.data import sampler, Dataset, DataLoader
 
+import numpy as np
 import itertools
+
 
 class Vocabulary(object):
     """Class to process text and extract vocabulary for mapping"""
@@ -73,10 +73,11 @@ class Vocabulary(object):
     def __contains__(self,key):
         return key in self._tk_to_idx
     
-    
+
 class Word2VecSamples(Dataset):
     
     unk_token = '<UNK>'
+    method = ''
     
     def samples_generator(self, doc):
         for t, token in enumerate(doc):
@@ -98,7 +99,7 @@ class Word2VecSamples(Dataset):
                     yield (self.vocabulary.token_to_index(token), context_list)
     
 
-    def __init__(self, corpus, window_size=2, cutoff_freq=0):
+    def __init__(self, corpus, model, window_size=2, cutoff_freq=0):
         
         # Obtengo el vocabulario a partir del corpus ya tokenizado:
         self.vocabulary = Vocabulary.from_corpus(corpus,cutoff_freq=cutoff_freq)
@@ -121,48 +122,16 @@ class Word2VecSamples(Dataset):
         
         self.word_indeces = torch.tensor(word_indeces,dtype=torch.long)
         self.context_indeces = torch.tensor(word_contexts,dtype=torch.long)
+        self.method = model
+
+    if method == 'CBOW':
+        def __getitem__(self,idx):
+            return self.context_indeces[idx,:], self.word_indeces[idx]
         
-    def __getitem__(self,idx):
-        return self.word_indeces[idx], self.context_indeces[idx,:]
+    elif method == 'SkipGram':
+        def __getitem__(self,idx):
+            return self.word_indeces[idx], self.context_indeces[idx,:]
+
     
     def __len__(self):
         return len(self.word_indeces)
-
-    
-    
-class CBOWModel(nn.Module):
-    
-    def __init__(self, vocab_size, embedding_dim):
-        super(CBOWModel,self).__init__()
-        self.emb = nn.Embedding(vocab_size+1, embedding_dim, padding_idx=vocab_size)
-        self.out = nn.Linear(embedding_dim, vocab_size, bias=False)
-        
-    def forward(self,x):
-        embedding = self.emb(x).mean(dim=1)
-        return self.out(embedding)
-    
-    def loss(self,scores,target):
-        lf = nn.CrossEntropyLoss(reduction='sum')
-        return lf(scores,target)
-        
-        
-        
-class SkipGramModel(nn.Module):
-    
-    def __init__(self, vocab_size, embedding_dim):
-        super(SkipGramModel,self).__init__()
-        self.emb = nn.Embedding(vocab_size+1, embedding_dim, padding_idx=vocab_size)
-        self.out = nn.Linear(embedding_dim, vocab_size, bias=False)
-        self.vocab_size = vocab_size
-        
-    def forward(self,x):
-        return self.out(self.emb(x))
-    
-    def loss(self,scores,target):
-        lf = nn.CrossEntropyLoss(ignore_index=self.vocab_size,reduction='sum')
-        scores = scores.view(-1,self.vocab_size,1).repeat(1,1,target.size(1))
-        return lf(scores,target)
-    
-    
-    
-    

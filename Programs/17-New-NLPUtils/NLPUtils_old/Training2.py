@@ -2,8 +2,110 @@ import torch
 from torch.utils.data import DataLoader, sampler
 import torch.optim as optim
 import torch.nn as nn
-from .WordVectors import *
+from .WordVectors2 import *
 import numpy as np
+
+
+class Trainer(object):
+    
+    def __init__(self,
+                 train_dataloader,
+                 val_dataloader,
+                 test_dataloader):
+        
+        self.train_dataloader = train_dataloader
+        self.val_dataloader = val_dataloader
+        self.test_dataloader = test_dataloader
+        
+    def InitModel(self, model, state_dict=None, device='cpu'):
+        
+        # Defino el dispositivo sobre el cual trabajar:
+        if device is None:
+            self.device = torch.device('cpu')
+            print('No se seleccionó ningún dispositivo de entrenamiento. Se asigna la cpu')
+        elif device == 'cpu':
+            self.device = torch.device('cpu')
+            print('Dispositivo seleccionado: cpu')
+        elif device == 'cuda:0' or device == 'cuda:1':
+            if torch.cuda.is_available():
+                self.device = torch.device(device)
+                print('Dispositivo seleccionado: {}'.format(device))
+            else:
+                self.device = torch.device('cpu')
+                print('No se dispone de GPUs. Se asigna como dispositivo de entrenamiento la cpu')
+        else:
+            raise TypeError('No se seleccionó un dispositivo válido')
+            
+        # Defino el modelo:
+        self.model = model
+        
+        # Inicializo con los parámetros de state_dict si hubiera:
+        if state_dict is not None:
+            self.model.load_state_dict(state_dict)
+        
+        # Copio el modelo al dispositivo:
+        self.model = self.model.to(device=self.device)
+    
+    
+    def SaveModel(self, file):
+        pass
+    
+    def Train(self, epochs=1, algorithm='SGD', **kwargs):
+        
+        # Defino el algoritmo de optimización:
+        if algorithm == 'SGD':
+            optimizer = optim.SGD(self.model.parameters(), **kwargs)
+        elif algorithm == 'Adam':
+            optimizer = optim.Adam(self.model.parameters(), **kwargs)
+        self.model.train()
+        
+        # Identifico si es la primera vez que entreno o no:
+        try:
+            n_iter = self.performance_history['iter'][-1]
+            print('Resuming training...')
+        except IndexError:
+            print('Starting training...')
+            self.performance_history = {'iter': [], 'loss': [], 'accuracy': []}
+            n_iter = 0
+        
+        # Varios:
+        print('Optimization method: {}'.format(algorithm))
+        print('Learning Rate: {:.2g}'.format(kwargs['lr']))
+        print('Number of epochs: {}'.format(epochs))
+        print('Running on device ({})'.format(self.device))
+        print()
+        
+        # Comienzo a entrenar:
+        try:
+    
+            for e in range(epochs):
+                for t, (x,y) in enumerate(self.train_dataloader):
+
+                    x = x.to(device=self.device, dtype=self.input_dtype)
+                    y = y.to(device=self.device, dtype=self.target_dtype)
+
+                    optimizer.zero_grad() # Llevo a cero los gradientes de la red
+                    scores = self.model(x) # Calculo la salida de la red
+                    loss = self.model.loss(scores,y) # Calculo el valor de la loss
+                    loss.backward() # Calculo los gradientes
+                    optimizer.step() # Actualizo los parámetros
+                    
+                    print(t, loss.item())
+                    
+            print('Training finished')
+            print()
+
+        except KeyboardInterrupt:
+
+            print('Exiting training...')
+            print()   
+            
+            
+    
+    def EvalPerformance(self):
+        pass
+
+
 
 
 class ModelTrainer(object):
@@ -121,7 +223,7 @@ class ModelTrainer(object):
         
         if self.first_time:
             print('Starting training...')
-            self.loss_history = {'iter': [], 'loss': []}
+            self.performance_history = {'iter': [], 'loss': [], 'accuracy': []}
             n_iter = 0
             self.first_time = False
         else:
