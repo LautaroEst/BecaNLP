@@ -6,4 +6,22 @@ Programs/04-Prueba-standarization/jigsaw-toxic-comment-classification-challenge/
 Programs/16-pytorch-back-to-basics/CIFAR10/*
 Programs/15-Training-word-vectors/vectors-emb200-win8-lmCBOW_2020-01-24-15-08-26.bin
 Programs/16-pytorch-back-to-basics/vectors-25-01.bin
+Programs/18-Resumen-from-stratch/cbow_trainers.bin
+Programs/18-Resumen-from-stratch/data.bin
+Programs/18-Resumen-from-stratch/emb1.bin
+Programs/18-Resumen-from-stratch/promptsl40_test_cleaned.bin
+Programs/18-Resumen-from-stratch/promptsl40_train_cleaned.bin
+Programs/18-Resumen-from-stratch/sk_trainers.bin
+Programs/18-Resumen-from-stratch/sk_trainers_wiki.bin
+Programs/18-Resumen-from-stratch/trainers1.bin
+Programs/18-Resumen-from-stratch/trainers2.bin
+Programs/18-Resumen-from-stratch/trainers3.bin
+Programs/18-Resumen-from-stratch/wiki
+Programs/18-Resumen-from-stratch/wiki-corpus/
+Programs/18-Resumen-from-stratch/wiki-frase
+Programs/18-Resumen-from-stratch/xaa
+Programs/18-Resumen-from-stratch/xak
+Programs/18-Resumen-from-stratch/xau
+Utils/Datasets/wiki2018.txt
+Utils/Datasets/wiki2018/
 

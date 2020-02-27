@@ -551,25 +551,59 @@ def GetTrainCorpus(file):
     return corpus
     
     
-def GetEmbeddings(file, trainer):
-    with open(file, 'rb') as f:
-        lines = f.readlines()
-        corpus = [['<s>'] + re.split(r'[\t \n]',l.decode('iso-8859-1'))[2:-1] + ['</s>'] for l in lines]
-    test_vocab = Vocabulary.from_corpus(corpus,cutoff_freq=0)
+def GetARPAFile(trainer, test_filename, output_file):
+    
+    with open(test_filename, 'rb') as testfile:
+        test_text = testfile.readlines()
+    
+    test_corpus = [['<s>'] + re.split(r'[\t \n]',l.decode('iso-8859-1'))[2:-1] + ['</s>'] for l in test_text]
+    test_corpus = [token for line in test_corpus for token in line]
+
+    # Probabilidad de los unigramas:
+    test_vocab = Vocabulary.from_corpus([test_corpus],cutoff_freq=0)
     train_vocab = trainer.dataloader.dataset.vocabulary
-    embedding_dict = {}
-    embedding_dim = len(trainer.model.out.weight.data[0,:])
+    unigram_probs = {}
+    uniform_prob = max(-99.,-float(np.log(len(train_vocab))))
     for tk in test_vocab:
         try:
             idx = train_vocab[tk]
-            embedding_dict[tk] = (trainer.model.emb(torch.tensor(idx)), trainer.model.out.weight.data[idx,:])
-        except:
-            embedding_dict[tk] = (torch.randn(embedding_dim), torch.randn(embedding_dim))
+            emb = trainer.model.emb(torch.tensor(idx).to(device=trainer.device))
+            out = trainer.model.out.weight.data[idx,:].to(device=trainer.device)
+            unigram_scores = trainer.model.out(out)
+            unigram_probs[tk] = min(max(-99,(unigram_scores - torch.logsumexp(unigram_scores, dim=0))[idx].item()),0.)
+        except KeyError:
+            unigram_probs[tk] = uniform_prob
     
-    return embedding_dict
+    # Probabilidad de los bigramas:
+    len_test_corpus = len(test_corpus)
+    test_bigrams = sorted(list(set(['{} {}'.format(test_corpus[t-1], test_corpus[t]) for t in range(1,len_test_corpus)])))
+    bigram_probs = {}
+    for bigram in test_bigrams:
+        try:
+            w1, w2 = bigram.split(' ')
+            idx1, idx2 = train_vocab[w1], train_vocab[w2]
+            x = torch.tensor(idx1).to(device=trainer.device)
+            bigram_scores = trainer.model.out(trainer.model.emb(x))
+            bigram_probs[bigram] = min(max(-99.,(bigram_scores - torch.logsumexp(bigram_scores, dim=0))[idx2].item()),0.)
+        except KeyError:
+            bigram_probs[bigram] = uniform_prob
+    
+    # Creo el archivo en formato ARPA:
+    new_lm_file = ['\n', 
+                   '\\data\\\n', 
+                   'ngram 1={}\n'.format(len(test_vocab)), 
+                   'ngram 2={}\n'.format(len(test_bigrams)), 
+                   '\n', 
+                   '\\1-grams:\n']
+    new_lm_file += ['{:.6f}\t{}\t0\n'.format(p,unigram) for unigram, p in unigram_probs.items()]
+    new_lm_file += ['\n'] + ['\\2-grams:\n'] 
+    new_lm_file += ['{:.6f}\t{}\n'.format(p,bigram) for bigram, p in bigram_probs.items()]
+    new_lm_file += ['\n', '\\end\\\n']
 
+    with open(output_file, 'wb') as file:
+        file.write((''.join(new_lm_file)).encode('iso-8859-1'))
     
-    
-    
+    return unigram_probs, bigram_probs
+
     
     
