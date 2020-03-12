@@ -22,6 +22,14 @@ Programs/18-Resumen-from-stratch/wiki-frase
 Programs/18-Resumen-from-stratch/xaa
 Programs/18-Resumen-from-stratch/xak
 Programs/18-Resumen-from-stratch/xau
-Utils/Datasets/wiki2018.txt
-Utils/Datasets/wiki2018/
-
+Utils/Datasets/wiki2018/*
+Utils/Datasets/AG_NEWS/*
+Utils/Datasets/Amazon-cellphone-reviews/*
+Utils/Datasets/AmazonReviewFull/*
+Utils/Datasets/DBpedia/*
+Utils/Datasets/IMDb/*
+Utils/Datasets/SogouNews/*
+Utils/Datasets/twitter_samples/*
+Utils/Datasets/wikitext-103/*
+Utils/Datasets/YahooAnswers/*
+Utils/Datasets/YelpReviewFull/*
