@@ -163,7 +163,7 @@ class Trainer(object):
         print('Running on device ({})'.format(self.device))
         print()
         
-        try:
+        
             for e in range(epochs):
                 for t, (x,y) in enumerate(self.dataloader):
                     x = x.to(device=self.device)

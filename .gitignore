@@ -33,3 +33,4 @@ Utils/Datasets/twitter_samples/*
 Utils/Datasets/wikitext-103/*
 Utils/Datasets/YahooAnswers/*
 Utils/Datasets/YelpReviewFull/*
+Utils/Datasets/aclImdb/*
