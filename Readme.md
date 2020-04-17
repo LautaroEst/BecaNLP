@@ -6,28 +6,30 @@ Material utilizado durante el desarrollo de la beca estímulo 2019-2020.
 
 ## Bibliografía de NLP:
 
-* [Natural Language Processing with Python – Analyzing Text with the Natural Language Toolkit (Steven Bird, Ewan Klein, and Edward Loper, 2009)](./Libros/Steven Bird, Ewan Klein, Edward Loper - Natural Language Processing with Python-O'Reilly Media (2009).pdf)
+* Natural Language Processing with Python – Analyzing Text with the Natural Language Toolkit (Steven Bird, Ewan Klein, and Edward Loper, 2009).
 Página oficial: http://www.nltk.org/book/
 
-* [Foundations of Statistical Natural Language Processing (Christopher D. Manning, Hinrich Schuetze, 1999)](./Libros/Christopher D. Manning, Hinrich Schütze - Foundations of Statistical Natural Language Processing-The MIT Press (1999).pdf)
+* Foundations of Statistical Natural Language Processing (Christopher D. Manning, Hinrich Schuetze, 1999).
 Página oficial: https://nlp.stanford.edu/fsnlp/
 
-* SPEECH and LANGUAGE PROCESSING - An Introduction to Natural Language Processing, Computational Linguistics, and Speech Recognition
-De este libro hay dos ediciones: [Ed. 2 completa](./Libros/Daniel Jurafsky, James H. Martin - Speech and Language Processing-Prentice Hall (2008).djvu) [Ed. 3 en desarrollo](./Libros/Speech and Language Processing.pdf)
+* SPEECH and LANGUAGE PROCESSING - An Introduction to Natural Language Processing, Computational Linguistics, and Speech Recognition.
+De este libro hay dos ediciones (ed. 2 completa y ed. 3 en desarrollo):
 
 	* [Página oficial ed. 2](https://www.cs.colorado.edu/~martin/slp2.html)
 	* [Página oficial ed. 3](https://web.stanford.edu/~jurafsky/slp3/)
 
-* [The Oxford Handbook of Computational Linguistics](./Libros/Mitkov Ruslan (Editor) - The Oxford Handbook of Computational Linguistics.pdf) No hay página oficial.
+* The Oxford Handbook of Computational Linguistics. No hay página oficial.
 
-* [Python 3 Text Processing with NLTK 3 Cookbook: Over 80 practical recipes on natural language processing techniques using Python's NLTK 3.0. (Perkins, 2014)](./Libros/Jacob Perkins - Python 3 Text Processing with NLTK 3 Cookbook_ Over 80 practical recipes on natural language processing techniques using Python's NLTK 3.0-Packt Publishing (2014).pdf).
+* Christopher D Manning_ Prabhakar Raghavan_ Hinrich Schutze - Introduction to information retrieval-Cambridge University Press (2008).
 
-* [Natural Language Processing: Python and NLTK. (Jacob Perkins, Nitin Hardeniya, Deepti Chopra, Iti Mathur, Nisheeth Joshi, 2016)](./Libros/Jacob Perkins, Nitin Hardeniya, Deepti Chopra, Iti Mathur, Nisheeth Joshi - Natural Language Processing_ Python and NLTK-Packt (2016).pdf)
+* Python 3 Text Processing with NLTK 3 Cookbook: Over 80 practical recipes on natural language processing techniques using Python's NLTK 3.0. (Perkins, 2014).
 
-* [Taming Text](./Libros/Grant S. Ingersoll, Thomas S. Morton, Andrew L. Farris - Taming Text. How to find, organize and manipulate it-Manning (2013).pdf)
+* Natural Language Processing: Python and NLTK. (Jacob Perkins, Nitin Hardeniya, Deepti Chopra, Iti Mathur, Nisheeth Joshi, 2016)
+
+* Taming Text.
 Página oficial: http://tamingtext.com/
 
-* [Natural Language Processing with PyTorch: Build Intelligent Language Applications Using Deep Learning](./Libros/Delip Rao, Brian McMahan - Natural Language Processing with PyTorch_ Build Intelligent Language Applications Using Deep Learning-O’Reilly Media (2019).pdf)
+* Natural Language Processing with PyTorch: Build Intelligent Language Applications Using Deep Learning
 Código del libro: https://github.com/joosthub/PyTorchNLPBook
 
 
@@ -38,6 +40,10 @@ https://web.stanford.edu/class/cs224n/
 
 * Stanford NLU: 
 https://web.stanford.edu/class/cs224u/
+
+* Stanford Linguistics:
+Videos: https://www.youtube.com/channel/UC_48v322owNVtORXuMeRmpA
+Página web: https://www.youtube.com/channel/UC_48v322owNVtORXuMeRmpA
 
 * Oxford NLP: 
 https://github.com/oxford-cs-deepnlp-2017
