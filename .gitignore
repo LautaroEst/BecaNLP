@@ -23,5 +23,7 @@ Programs/18-Resumen-from-stratch/xaa
 Programs/18-Resumen-from-stratch/xak
 Programs/18-Resumen-from-stratch/xau
 Utils/Datasets/*
-!Utils/Datasets/Readme.md
+!Utils/Datasets/*.md
+!Utils/Datasets/*.py
+!Utils/Datasets/*.ipynb
 Libros/*
