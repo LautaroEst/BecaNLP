@@ -44,7 +44,12 @@ def read_imdb_dataset():
     df_test = pd.read_csv(os.path.join(DATASET_PATH,'test.csv'),names=['comment','rate'],
                           dtype={'comment':str,'rate':np.int},skiprows=1)
     
-    return df_train, df_test, vocab
+    df_unsup = pd.read_csv(os.path.join(DATASET_PATH,'train_unsup_all.csv'),names=['id','comment'],
+                          dtype={'id':np.int,'comment':str},skiprows=1)
+    
+    ds_unsup = df_unsup['comment']
+    
+    return df_train, df_test, ds_unsup, vocab
         
         
         
