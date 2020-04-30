@@ -159,7 +159,7 @@ class Trainer(object):
         num_samples = 0
         self.model.eval()  
         with torch.no_grad():
-            for x, y in self.dev_loader:
+            for x, y in loader:
                 x = x.to(self.device)  
                 y = y.to(self.device)
 
@@ -172,14 +172,17 @@ class Trainer(object):
             return num_correct, num_samples
 
     def plot_history(self, train_acc=False, **kwargs):
-        loss_fig, loss_ax = plt.subplots()
-        loss_ax.plot(self.loss_history['iter'],self.loss_history['loss'], **kwargs)
         
-        acc_fig, acc_ax = plt.subplots()
-        acc_ax.plot(self.loss_history['iter'],self.loss_history['dev_acc'], **kwargs)
-        
+        fig, ax = plt.subplots(1,2)
+        ax[0].plot(self.loss_history['iter'],self.loss_history['loss'], **kwargs)
+        ax[0].set_title('Loss')
+
+        ax[1].plot(self.loss_history['iter'],self.loss_history['dev_acc'], label='Validation', **kwargs)
         if train_acc:
-            acc_fig, acc_ax = plt.subplots()
-            acc_ax.plot(self.loss_history['iter'],self.loss_history['train_acc'], **kwargs)
+            ax[1].plot(self.loss_history['iter'],self.loss_history['train_acc'], label='Train', **kwargs)
+
+        ax[1].set_title('Accuracy error')
+        ax[1].legend()
+        fig.savefig('./loss_history-{}.png'.format(now.strftime("%Y-%m-%d-%H-%M-%S")))
         
     
