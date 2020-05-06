@@ -165,9 +165,9 @@ class NeuralNetClassifier(object):
         scores = model(x)
         if scores.dim() == 2:
             if scores.size(1) == 1:
-                make_predictions = lambda scores: (scores > .5).type(torch.float)
+                make_predictions = lambda scores: (torch.sigmoid(scores) > .5).type(torch.float)
             else:
-                make_predictions = lambda scores: scores.max(1)[1]
+                make_predictions = lambda scores: scores.argmax(dim=1).view(-1,1)
         else:
             # TO DO
             raise RuntimeError('More than 2 dimensions in output scores vector. Not supported.')
@@ -199,25 +199,7 @@ class NeuralNetClassifier(object):
     
     
     
-class LogisticRegressionClassifier(NeuralNetClassifier):
-    
-    class Model(nn.Module):
-        
-        def __init__(self,in_features,bias=True):
-            super().__init__()
-            self.linear = nn.Linear(in_features,1,bias)
-            
-        def forward(self,x):
-            return self.linear(x)
-    
-    
-    def __init__(self, in_features, bias=True, device='cpu'):
-        model = self.Model(in_features, bias)
-        super().__init__(model,device)
-        
-    def loss(self,scores,target):
-        return F.binary_cross_entropy_with_logits(scores, target, reduction='mean') 
-    
+
     
     
     

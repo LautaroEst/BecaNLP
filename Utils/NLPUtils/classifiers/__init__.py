@@ -1,1 +1,3 @@
-from . import nnclassifiers
+from .NNClassifiers import NeuralNetClassifier
+from .LinearClassifiers import LogisticRegressionClassifier, LinearSoftmaxClassifier
+from .SequenceClassifiers import SequenceClassifier
