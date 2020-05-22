@@ -41,21 +41,24 @@ def split_dev_kfolds(N,dev_size=.2,k_folds=None,random_state=0):
 
     return indeces
 
-class NgramTextVectorizer(CountVectorizer):
-    
-    def __init__(self,token_pattern=r'\b\w+\b',vocabulary=None,unk_token=None,
+class NgramCountVectorizer(CountVectorizer):
+
+    # def __init__(self,token_pattern=r'\b\w+\b',vocabulary=None,unk_token=None,
+    #      min_freq=1,max_freq=np.inf,ngram_range=(1,1),max_features=None):
+
+    def __init__(self,token_pattern=r'\b\w+\b',unk_token=None,
          min_freq=1,max_freq=np.inf,ngram_range=(1,1),max_features=None):
-        
+
         super().__init__(lowercase=False,token_pattern=token_pattern,
             vocabulary=None,ngram_range=ngram_range)
 
         self.unk_token = unk_token
         self.min_freq = min_freq
         self.max_freq = max_freq
-        self.open_vocab = True if vocabulary is None else False
-        self.true_vocab = vocabulary
+        # self.open_vocab = True if vocabulary is None else False
+        # self.true_vocab = vocabulary
         self.true_max_features = max_features
-        
+
 
     def get_columns_to_keep(self,X,min_freq,max_freq):
         if min_freq <= 0 and max_freq == np.inf:
@@ -72,16 +75,16 @@ class NgramTextVectorizer(CountVectorizer):
 
         vocab = self.vocabulary_
         vocab_len = len(vocab)
-        
+
         if self.unk_token is not None:
             remove_tokens = np.ones(vocab_len,dtype=np.bool)
             remove_tokens[items_to_keep] = False
             X = X.tolil()
             X[:,-1] = X[:,remove_tokens].sum(axis=1)
             X = X.tocsr()
-        
+
         X = X[:,items_to_keep]
-        
+
         sorted_idx = np.argsort(list(vocab.values()))
         tokens = list(vocab.keys())
         sorted_tokens = [tokens[i] for i in sorted_idx]
@@ -91,27 +94,30 @@ class NgramTextVectorizer(CountVectorizer):
 
     def fit_transform(self,corpus):
         X = super().fit_transform(corpus)
-        if self.open_vocab:
-            # tengo que recortar por frecuencia y/o por max_features
-            keep_items = self.get_columns_to_keep(X,self.min_freq,self.max_freq)
-            
+        # if self.open_vocab:
+        #     # tengo que recortar por frecuencia y/o por max_features
+        #     keep_items = self.get_columns_to_keep(X,self.min_freq,self.max_freq)
+        #
+        #
+        # else:
+        #     # tengo que sacar las palabras que no pertenecen al vocabulario
+        #     # y agregar las que sí pertenecen
+        #     vocab = self.vocabulary_
+        #     true_vocab = self.true_vocab
+        #     keep_items = [idx for ngram, idx in vocab.items() if all([tk in true_vocab for tk in ngram.split(' ')])]
+        #
+        #     for tk in true_vocab:
+        #         try:
+        #             _ = vocab[tk]
+        #         except KeyError:
+        #             len_vocab = len(vocab)
+        #             keep_items.append(len_vocab)
+        #             vocab[tk] = len_vocab
+        #     X.resize(X.shape[0],X.shape[1]+len(keep_items))
+        #     keep_items = np.array(keep_items)
 
-        else:
-            # tengo que sacar las palabras que no pertenecen al vocabulario
-            # y agregar las que sí pertenecen
-            vocab = self.vocabulary_
-            true_vocab = self.true_vocab
-            keep_items = [idx for ngram, idx in vocab.items() if all([tk in true_vocab for tk in ngram.split(' ')])]
-
-            for tk in true_vocab:
-                try:
-                    _ = vocab[tk]
-                except KeyError:
-                    len_vocab = len(vocab)
-                    keep_items.append(len_vocab)
-                    vocab[tk] = len_vocab
-            X.resize(X.shape[0],X.shape[1]+len(keep_items))
-            keep_items = np.array(keep_items)
+        # Asumo que tengo un vocabulario abierto siempre
+        keep_items = self.get_columns_to_keep(X,self.min_freq,self.max_freq)
 
         if self.true_max_features is not None:
             if self.true_max_features < len(keep_items):
@@ -132,7 +138,7 @@ class NgramTextVectorizer(CountVectorizer):
         X = self.remove_items(X,keep_items)
         return X
 
-    
+
     def fit(self,corpus):
         self.fit_transform(corpus)
         return self
@@ -141,11 +147,11 @@ class NgramTextVectorizer(CountVectorizer):
     def transform(self,corpus):
         unk_token = self.unk_token
         vocab = self.vocabulary_
-        
+
         indptr = [0]
         j_indices = []
         values = []
-        
+
         tokenizer = self.build_analyzer()
         if unk_token is None:
             for doc in corpus:
@@ -163,7 +169,7 @@ class NgramTextVectorizer(CountVectorizer):
                 j_indices.extend(feature_counter.keys())
                 values.extend(feature_counter.values())
                 indptr.append(len(j_indices))
-                
+
         else:
             for doc in corpus:
                 feature_counter = {}
@@ -181,7 +187,7 @@ class NgramTextVectorizer(CountVectorizer):
                 j_indices.extend(feature_counter.keys())
                 values.extend(feature_counter.values())
                 indptr.append(len(j_indices))
-            
+
         j_indices = np.asarray(j_indices, dtype=self.dtype)
         indptr = np.asarray(indptr, dtype=self.dtype)
         values = np.asarray(values, dtype=self.dtype)
@@ -190,8 +196,30 @@ class NgramTextVectorizer(CountVectorizer):
                           shape=(len(indptr) - 1, len(vocab)),
                           dtype=self.dtype)
         X.sort_indices()
-            
+
         return X
-        
-    
-        
+
+def tfidf_transform(X):
+    data = np.log(X.data+1)
+    tf = csr_matrix((data,X.indices,X.indptr),shape=X.shape)
+    df = np.array(X.astype(np.bool).sum(axis=0),dtype=np.float).reshape(-1)
+    idf = np.log(X.shape[0]) - np.log(df, out=np.zeros_like(df), where=(df!=0))
+    return tf.multiply(idf)
+
+def oe_transform(X):
+    inv_row_sum = 1/X.sum(axis=1)
+    column_sum = X.sum(axis=0)
+    inv_column_sum = np.divide(1,column_sum,out=np.zeros_like(column_sum,dtype=np.float),where=(column_sum!=0))
+    all_sum = column_sum.sum()
+    oe = (X*all_sum).multiply(inv_row_sum).multiply(inv_column_sum).tocsr()
+    return oe
+
+
+def ppmi_transform(X):
+    oe = oe_transform(X)
+    print(type(oe))
+    ppmi_data = oe.data.copy()
+    ppmi_data = np.log(ppmi_data,out=np.zeros_like(ppmi_data,dtype=np.float),where=(ppmi_data!=0))
+    ppmi_data[ppmi_data <= 0] = 0
+    ppmi = csr_matrix((ppmi_data,oe.indices,oe.indptr),shape=X.shape)
+    return ppmi
