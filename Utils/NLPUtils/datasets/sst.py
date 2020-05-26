@@ -1,5 +1,5 @@
 import sys, os
-ROOT_PATH = os.path.join(sys.path[0].split('Cursos')[0],'BecaNLP')
+ROOT_PATH = os.path.join(sys.path[0].split('BecaNLP')[0],'BecaNLP')
 DATASET_PATH = os.path.join(ROOT_PATH,'Utils/Datasets/Stanford Sentiment Treebank/trees')
 
 from collections import Counter
@@ -44,7 +44,7 @@ def sentiment_treebank_reader(src_filename, class_func=None):
             # As in the paper, if the root node doesn't fall into any
             # of the classes for this version of the problem, then
             # we drop the example:
-            if label:
+            if label is not None:
                 for subtree in tree.subtrees():
                     subtree.set_label(class_func(subtree.label()))
                 yield (tree, label)
@@ -86,7 +86,7 @@ def ternary_class_func(y):
 def get_full_vocab():
 	corpus = [tree.leaves() for tree, label in train_reader()]
 	tk_to_freq = Counter(chain.from_iterable(corpus))
-	return {tk: freq for tk, freq in sorted(tk_to_freq.items(), 
+	return {tk: freq for tk, freq in sorted(tk_to_freq.items(),
 		key=lambda item: item[1], reverse=True)}
 
 
@@ -162,7 +162,7 @@ class BOWSSTDataset(Dataset):
 		for tree, label in reader():
 			labels.append(int(label))
 			feat_dicts.append(extract_features(tree))
-		
+
 		self.feat_matrix = vectorizer.transform(feat_dicts)
 		self.labels = torch.tensor(labels).view(-1,1)
 

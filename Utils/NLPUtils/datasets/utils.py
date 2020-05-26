@@ -49,8 +49,13 @@ class NgramCountVectorizer(CountVectorizer):
     def __init__(self,token_pattern=r'\b\w+\b',unk_token=None,
          min_freq=1,max_freq=np.inf,ngram_range=(1,1),max_features=None):
 
-        super().__init__(lowercase=False,token_pattern=token_pattern,
-            vocabulary=None,ngram_range=ngram_range)
+        if isinstance(token_pattern,str):
+            super().__init__(lowercase=False,token_pattern=token_pattern,
+                vocabulary=None,ngram_range=ngram_range)
+        elif token_pattern is None:
+            tokenizer = lambda x: x
+            super().__init__(lowercase=False,token_pattern=None,analyzer='word',
+            tokenizer=tokenizer, vocabulary=None,ngram_range=ngram_range)
 
         self.unk_token = unk_token
         self.min_freq = min_freq
