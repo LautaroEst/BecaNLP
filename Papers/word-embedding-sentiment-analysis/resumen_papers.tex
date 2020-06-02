@@ -1,0 +1,54 @@
+\documentclass[11pt]{article}
+
+\usepackage{sectsty}
+\usepackage{graphicx}
+
+% Margins
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\title{Resumen papers}
+\author{ Lautaro Estienne}
+\date{\today}
+
+\begin{document}
+\maketitle	
+
+% Optional TOC
+% \tableofcontents
+% \pagebreak
+
+%--Paper--
+
+\section{2011. Maas et al.}
+
+En este paper tratan de apreder word embeddings que sirvan para usar en tareas de sentimientos. Cuando uno aprende word embeddings en general muchas veces no se logran capturar sentidos específicos de la palabra, que son los que me interesan para la aplicación (justamente, por ejemplo, la connotación sentimental de una palabra).
+
+El aprendizaje de estos vectores se hace a maximizando una función de costo que consiste de la suma de dos términos: 
+\begin{itemize}
+\item El primero, es el "costo de las palabras del documento". Es decir, se define una función de costo que depende de las palabras en un documento y se maximiza esa función. Los parámetros aprendidos son los word embeddings. Este es un método totalmente no supervisado. Simplemente se está estimando una distribución $P(d)$ a parir de las muestras $d_1,\ldots,d_N$.
+
+\item El segundo es el costo supervisado de la clasificación de sentimientos (igual que logistic regression).
+\end{itemize}
+
+\section{TASS 2019}
+
+Métodos de preprocesamiento comunes en tweets:
+
+\begin{itemize}
+\item Se eliminan los espacios redundantes
+\item Se eliminan los URLs o se reemplazan por un token especial <URL>
+\item Se reemplazan los users de twitter por un token especial <USER>
+\item Se pasa el texto a minúscula
+\item Se normalizan palabras con con letras de más ("holaaaaaa" por "hola"), aunque hay significado en estas palabras, sobre todo cuando se hace un modelo de subpalabras.
+\item Se normalizan las risas ("jajajaja", "jajjaja", "jeje" pasan a ser "jaja" todas).
+\end{itemize}
+
+
+%--/Paper--
+
+\end{document}

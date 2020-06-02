@@ -56,6 +56,9 @@ class NgramCountVectorizer(CountVectorizer):
             tokenizer = lambda x: x
             super().__init__(lowercase=False,token_pattern=None,analyzer='word',
             tokenizer=tokenizer, vocabulary=None,ngram_range=ngram_range)
+        elif callable(token_pattern):
+            super().__init__(lowercase=False,token_pattern=None,analyzer='word',
+            tokenizer=token_pattern, vocabulary=None,ngram_range=ngram_range)
 
         self.unk_token = unk_token
         self.min_freq = min_freq

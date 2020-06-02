@@ -27,3 +27,5 @@ Utils/Datasets/*
 !Utils/Datasets/*.py
 !Utils/Datasets/*.ipynb
 Libros/*
+Utils/stanford-corenlp-4.0.0/
+Utils/stanford-corenlp-latest.zip

@@ -30,6 +30,7 @@ class NeuralNetClassifier(object):
         device = self.device
 
         # Definimos el dataloader:
+        self.batch_size = batch_size
         loader = DataLoader(train_dataset, batch_size, shuffle=True)
 
         # Seleccionamos el método de optimización:
@@ -73,7 +74,7 @@ class NeuralNetClassifier(object):
 
                     loss_history.append(loss.item())
 
-                print('Epoch {} finished. Approximate loss: {:.4f}'.format(e, sum(loss_history[-5:])/5))
+                print('Epoch {} finished. Approximate loss: {:.4f}'.format(e, sum(loss_history[-5:])/len(loss_history[-5:])))
 
             print('Training finished')
             print()
@@ -165,30 +166,31 @@ class NeuralNetClassifier(object):
         scores = model(x)
         if scores.dim() == 2:
             if scores.size(1) == 1:
-                make_predictions = lambda scores: (scores > 0).type(torch.float)
+                make_predictions = lambda scores: (scores > 0).type(torch.long)
             else:
                 make_predictions = lambda scores: scores.argmax(dim=1).view(-1,1)
         else:
             # TO DO
             raise RuntimeError('More than 2 dimensions in output scores vector. Not supported.')
 
-        loader = DataLoader(dataset, batch_size=512)
+        try:
+            batch_size = self.batch_size
+        except:
+            batch_size = 512
 
-        num_correct = 0
-        num_samples = 0
+        loader = DataLoader(dataset, batch_size=batch_size)
+
+        y_predict = []
         with torch.no_grad():
             for x, y in loader:
                 x = x.to(device)
-                y = y.to(device)
+                y = y.to(device,dtype=torch.long)
 
                 scores = model(x)
                 preds = make_predictions(scores)
-                num_correct += (preds == y).sum()
-                num_samples += preds.size(0)
+                y_predict.append(preds)
 
-        print('Total accuracy: {}/{} ({:.2f}%)'\
-              .format(num_correct, num_samples,
-                      100 * float(num_correct) / num_samples))
+        return torch.cat(y_predict)
 
     def loss(self,scores,target):
         """
@@ -273,7 +275,7 @@ class SequenceClassifier(NeuralNetClassifier):
 
                     loss_history.append(loss.item())
 
-                print('Epoch {} finished. Approximate loss: {:.4f}'.format(e, sum(loss_history[-5:])/5))
+                print('Epoch {} finished. Approximate loss: {:.4f}'.format(e, sum(loss_history[-5:])/len(loss_history[-5:])))
 
             print('Training finished')
             print()
