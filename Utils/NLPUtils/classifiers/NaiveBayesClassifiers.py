@@ -1,22 +1,6 @@
 import numpy as np
 from sklearn.naive_bayes import MultinomialNB as sklearnMNB, BernoulliNB as sklearnBNB, CategoricalNB as sklearnCNB
-
-
-class NaiveBayesClassifier(object):
-
-	def __init__(self):
-		if not hasattr(self,classifier):
-			raise AttributeError('No se inicializó el modelo')
-
-	def train(self,dataset):
-		X, y = dataset
-		self.classifier.fit(X,y)
-		return self
-
-	def predict(self,dataset):
-		X, y = dataset
-		y_predict = self.classifier.predict(X)
-		return y, y_predict
+from .BaseClassifiers import NaiveBayesClassifier
 
 
 class MultinomialNB(NaiveBayesClassifier):

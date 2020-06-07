@@ -104,14 +104,16 @@ def es_test_reader():
 	for item in root:
 		yield item[0].text, item[2].text
 
-reader_dict = {	'uy': uy_train_reader,
-				'cr': cr_train_reader,
-				'pe': pe_train_reader,
-				'mx': mx_train_reader,
-				'es': es_train_reader}
+
 
 def train_reader(lang=['es']):
 	
+	reader_dict = {	'uy': uy_train_reader,
+					'cr': cr_train_reader,
+					'pe': pe_train_reader,
+					'mx': mx_train_reader,
+					'es': es_train_reader}
+
 	if lang is None:
 		lang = list(reader_dict.keys())
 
@@ -122,6 +124,12 @@ def train_reader(lang=['es']):
 
 
 def dev_reader(lang=['es']):
+
+	reader_dict = {	'uy': uy_dev_reader,
+					'cr': cr_dev_reader,
+					'pe': pe_dev_reader,
+					'mx': mx_dev_reader,
+					'es': es_dev_reader}
 
 	if lang is None:
 		lang = list(reader_dict.keys())
@@ -134,6 +142,12 @@ def dev_reader(lang=['es']):
 
 def test_reader(lang=['es']):
 
+	reader_dict = {	'uy': uy_test_reader,
+					'cr': cr_test_reader,
+					'pe': pe_test_reader,
+					'mx': mx_test_reader,
+					'es': es_test_reader}
+
 	if lang is None:
 		lang = list(reader_dict.keys())
 
@@ -142,13 +156,16 @@ def test_reader(lang=['es']):
 		for tweet_id, text in reader():
 			yield tweet_id, text
 
+
 def get_train_dataframe(lang=['es']):
 	tweets, labels = zip(*[(text,label) for text, label in train_reader(lang=lang)])
 	return pd.DataFrame({'text':tweets, 'label':labels})
 
+
 def get_dev_dataframe(lang=['es']):
 	tweets, labels = zip(*[(text,label) for text, label in dev_reader(lang=lang)])
 	return pd.DataFrame({'text':tweets, 'label':labels})
+
 
 def get_test_dataframe(lang=['es']):
 	tweet_ids, tweet_texts = zip(*[(tweet_id,text) for tweet_id, text in test_reader(lang=lang)])
