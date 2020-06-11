@@ -6,11 +6,16 @@ from torch.utils.data import Dataset, DataLoader
 
 from .BaseClassifiers import NeuralNetClassifier
 from .BaseClassifiers import SequenceClassifier
+from .initializations import *
 
 
 
-class LogisticRegressionClassifier(NeuralNetClassifier):
+class LogisticRegressionClassifier(NeuralNetClassifier):  
     
+    def __init__(self, in_features, bias=True, device='cpu'):
+        model = self.Model(in_features, bias)
+        super().__init__(model,device)
+
     class Model(nn.Module):
         
         def __init__(self,in_features,bias=True):
@@ -19,12 +24,13 @@ class LogisticRegressionClassifier(NeuralNetClassifier):
             
         def forward(self,x):
             return self.linear(x)
-    
-    
-    def __init__(self, in_features, bias=True, device='cpu'):
-        model = self.Model(in_features, bias)
-        super().__init__(model,device)
-        
+
+    def init_parameters(self,mean=0.,std=1.,random_state=None):
+        state_dict = self.model.state_dict()
+        normal_init(state_dict['linear.weight'],mean,std,random_state)
+        #zeros_init(state_dict['linear.weight'])
+        zeros_init(state_dict['linear.bias'])
+
     def loss(self,scores,target):
         return F.binary_cross_entropy_with_logits(scores, target, reduction='mean')
 

@@ -21,7 +21,7 @@ class NeuralNetClassifier(object):
         self.model = model.to(device)
 
     def train(self, train_dataset, optim_algorithm='SGD',
-              epochs=1, batch_size=512, **kwargs):
+              epochs=1, batch_size=512, verbose=True, **kwargs):
         """
         Función para entrenar el modelo.
         """
@@ -53,9 +53,11 @@ class NeuralNetClassifier(object):
         # Inicializamos el historial de la loss:
         try:
             loss_history = self.loss_history
-            print('Resuming training from epoch {}...'.format(current_epoch))
+            if verbose:
+                print('Resuming training from epoch {}...'.format(current_epoch))
         except AttributeError:
-            print('Starting training...')
+            if verbose:
+                print('Starting training...')
             loss_history = []
 
         # Comenzamos el entrenamiento:
@@ -74,14 +76,17 @@ class NeuralNetClassifier(object):
 
                     loss_history.append(loss.item())
 
-                print('Epoch {} finished. Approximate loss: {:.4f}'.format(e, sum(loss_history[-5:])/len(loss_history[-5:])))
+                if verbose:
+                    print('Epoch {} finished. Approximate loss: {:.4f}'.format(e, sum(loss_history[-5:])/len(loss_history[-5:])))
 
-            print('Training finished')
-            print()
+            if verbose:
+                print('Training finished')
+                print()
 
         except KeyboardInterrupt:
-            print('Exiting training...')
-            print()
+            if verbose:
+                print('Exiting training...')
+                print()
 
         self.model = model
         self.loss_history = loss_history
@@ -190,7 +195,7 @@ class NeuralNetClassifier(object):
                 preds = make_predictions(scores)
                 y_predict.append(preds)
 
-        return torch.cat(y_predict)
+        return torch.cat(y_predict).view(-1)
 
     def loss(self,scores,target):
         """

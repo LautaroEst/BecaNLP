@@ -101,18 +101,18 @@ def check_performance(y_test,y_predict,metric):
 
 
 def confusion_matrix(y_test,y_predict):
-    
-	if isinstance(y_test,torch.Tensor):
-		y_test = y_test.numpy()
-	if isinstance(y_predict,torch.Tensor):
-		y_predict = y_predict.numpy()
 
-	classes = np.unique(y_test)
-	n_classes = len(classes)
-	cm = np.zeros((n_classes,n_classes))
-	for i, c in enumerate(classes):
-		cm[i,:] = (y_predict[y_test == c].reshape(-1,1) == classes).sum(axis=0)
-	return cm
+    if isinstance(y_test,torch.Tensor):
+        y_test = y_test.numpy()
+    if isinstance(y_predict,torch.Tensor):
+        y_predict = y_predict.numpy()
+
+    classes = np.unique(y_test)
+    n_classes = len(classes)
+    cm = np.zeros((n_classes,n_classes))
+    for i, c in enumerate(classes):
+        cm[i,:] = (y_predict[y_test == c].reshape(-1,1) == classes).sum(axis=0)
+    return cm
 
 
 def accuracy(y_test,y_predict):
