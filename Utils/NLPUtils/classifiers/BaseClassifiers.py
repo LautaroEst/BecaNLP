@@ -20,8 +20,7 @@ class NeuralNetClassifier(object):
         self.device = device
         self.model = model.to(device)
 
-    def train(self, train_dataset, optim_algorithm='SGD',
-              epochs=1, batch_size=512, verbose=True, **kwargs):
+    def train(self, train_dataset, epochs=1, verbose=True, optim_algorithm='minibatch', **kwargs):
         """
         Función para entrenar el modelo.
         """
@@ -30,14 +29,17 @@ class NeuralNetClassifier(object):
         device = self.device
 
         # Definimos el dataloader:
-        self.batch_size = batch_size
+        if optim_algorithm == 'SGD':
+            batch_size = 1
+        else:
+            batch_size = kwargs.pop('batch_size',512)
         loader = DataLoader(train_dataset, batch_size, shuffle=True)
 
         # Seleccionamos el método de optimización:
         try:
             optimizer = self.optimizer
         except AttributeError:
-            if optim_algorithm == 'SGD':
+            if optim_algorithm == 'minibatch' or optim_algorithm == 'SGD':
                 optimizer = optim.SGD(model.parameters(), **kwargs)
             elif optim_algorithm == 'Adam':
                 optimizer = optim.Adam(model.parameters(), **kwargs)
@@ -53,14 +55,16 @@ class NeuralNetClassifier(object):
         # Inicializamos el historial de la loss:
         try:
             loss_history = self.loss_history
-            if verbose:
-                print('Resuming training from epoch {}...'.format(current_epoch))
+            print('Resuming training from epoch {}...'.format(current_epoch))
         except AttributeError:
-            if verbose:
-                print('Starting training...')
+            print('Starting training...')
             loss_history = []
 
         # Comenzamos el entrenamiento:
+        zero_grad = optimizer.zero_grad
+        step = optimizer.step
+        loss_fn = self.loss
+
         try:
 
             for e in range(current_epoch, current_epoch+epochs):
@@ -68,25 +72,24 @@ class NeuralNetClassifier(object):
                     x = x.to(device)
                     y = y.to(device)
 
-                    optimizer.zero_grad() # Llevo a cero los gradientes de la red
+                    zero_grad() # Llevo a cero los gradientes de la red
                     scores = model(x) # Calculo la salida de la red
-                    loss = self.loss(scores,y) # Calculo el valor de la loss
+                    loss = loss_fn(scores,y) # Calculo el valor de la loss
                     loss.backward() # Calculo los gradientes
-                    optimizer.step() # Actualizo los parámetros
+                    step() # Actualizo los parámetros
 
                     loss_history.append(loss.item())
 
                 if verbose:
                     print('Epoch {} finished. Approximate loss: {:.4f}'.format(e, sum(loss_history[-5:])/len(loss_history[-5:])))
 
-            if verbose:
-                print('Training finished')
-                print()
+        
+            print('Training finished')
+            print()
 
         except KeyboardInterrupt:
-            if verbose:
-                print('Exiting training...')
-                print()
+            print('Exiting training...')
+            print()
 
         self.model = model
         self.loss_history = loss_history
@@ -167,10 +170,11 @@ class NeuralNetClassifier(object):
         model = self.model
         model.eval()
 
-        x = dataset[0][0].view(1,-1).to(device)
-        scores = model(x)
-        if scores.dim() == 2:
-            if scores.size(1) == 1:
+        x, _ = dataset[0]
+        scores = model(x.to(device))
+        print(scores)
+        if scores.dim() <= 2: # (N,C) o (N,)
+            if scores.dim() == 1:
                 make_predictions = lambda scores: (scores > 0).type(torch.long)
             else:
                 make_predictions = lambda scores: scores.argmax(dim=1).view(-1,1)
@@ -178,24 +182,18 @@ class NeuralNetClassifier(object):
             # TO DO
             raise RuntimeError('More than 2 dimensions in output scores vector. Not supported.')
 
-        try:
-            batch_size = self.batch_size
-        except:
-            batch_size = 512
-
-        loader = DataLoader(dataset, batch_size=batch_size)
-
-        y_predict = []
+        n_samples = len(dataset)
+        print(n_samples)
+        y_predict = torch.zeros(n_samples,dtype=torch.long)
+        print('y_predict',y_predict)
         with torch.no_grad():
-            for x, y in loader:
-                x = x.to(device)
-                y = y.to(device,dtype=torch.long)
+            for i in range(n_samples):
+                x, _ = dataset[i]
+                scores = model(x.to(device))
+                y_predict[i] = make_predictions(scores)
 
-                scores = model(x)
-                preds = make_predictions(scores)
-                y_predict.append(preds)
-
-        return torch.cat(y_predict).view(-1)
+        print(y_predict)
+        return y_predict
 
     def loss(self,scores,target):
         """

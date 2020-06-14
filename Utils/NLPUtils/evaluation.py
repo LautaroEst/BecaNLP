@@ -110,6 +110,7 @@ def confusion_matrix(y_test,y_predict):
     classes = np.unique(y_test)
     n_classes = len(classes)
     cm = np.zeros((n_classes,n_classes))
+    print(y_predict,y_test)
     for i, c in enumerate(classes):
         cm[i,:] = (y_predict[y_test == c].reshape(-1,1) == classes).sum(axis=0)
     return cm

@@ -1,0 +1,24 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\babel@toc {spanish}{}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Resumen}{2}{chapter*.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Agradecimientos}{3}{chapter*.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Índice general}{4}{chapter*.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {1}Introducción}{5}{chapter.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.1}Seccion 1}{5}{section.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {2}Título del capítulo 2}{6}{chapter.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.1}sección 1 del capítulo 2}{6}{section.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {A}Título del apéndice}{15}{appendix.Alph1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Bibliografía}{16}{appendix*.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Índice de figuras}{17}{appendix*.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Índice de tablas}{18}{appendix*.6}%

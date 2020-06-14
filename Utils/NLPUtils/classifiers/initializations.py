@@ -34,7 +34,7 @@ def uniform_init(tensor,a=0.0,b=1.0,random_state=None):
 		gen = torch.Generator()
 		gen.manual_seed(random_state)
 		with torch.no_grad():
-			tensor.copy_(torch.rand(tensor.size(),generator=gen))
+			tensor.copy_(torch.rand(tensor.size(),generator=gen) * (b-a) + a)
 	return tensor
 
 
@@ -46,7 +46,7 @@ def normal_init(tensor,mean=0.0,std=1.0,random_state=None):
 		gen = torch.Generator()
 		gen.manual_seed(random_state)
 		with torch.no_grad():
-			tensor.copy_(torch.randn(tensor.size(),generator=gen))
+			tensor.copy_(torch.randn(tensor.size(), generator=gen) * std + mean)
 	return tensor
 
 

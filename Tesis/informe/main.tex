@@ -1,0 +1,84 @@
+\documentclass[12pt,twoside]{report}
+
+% Encoding characters:
+\usepackage[utf8]{inputenc} 
+
+% Texto en español:
+\usepackage[spanish,es-tabla]{babel}
+
+% Gráficos e imágenes:
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Layout de la página:
+\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm,bindingoffset=6mm]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyhead[LO]{\leftmark}
+\fancyhead[RE]{\rightmark}
+\fancyfoot{}
+\fancyfoot[CO,CE]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+%\renewcommand{\footrulewidth}{0.4pt}
+
+% Referencias:
+\usepackage{biblatex}
+\addbibresource{references.bib}
+
+% Outline:
+\usepackage[bookmarks]{hyperref}
+
+
+\begin{document}
+
+\input{title_page}
+
+\chapter*{Resumen}
+\addcontentsline{toc}{chapter}{Resumen}
+
+En esta tesis...
+
+\newpage
+
+\chapter*{Agradecimientos}
+\addcontentsline{toc}{chapter}{Agradecimientos}
+
+Agradecimientos...
+
+\newpage
+
+\tableofcontents
+\addcontentsline{toc}{chapter}{Índice general}
+
+\newpage
+
+
+
+\chapter{Introducción}
+\input{chapters/intro}
+
+\chapter{Título del capítulo 2}
+\input{chapters/ch02}
+
+\appendix
+\chapter{Título del apéndice}
+\input{chapters/appA}
+
+\printbibliography
+\addcontentsline{toc}{chapter}{Bibliografía}
+
+\newpage
+
+\listoffigures
+\addcontentsline{toc}{chapter}{Índice de figuras}
+
+\newpage
+
+\listoftables
+\addcontentsline{toc}{chapter}{Índice de tablas}
+
+
+\end{document}
