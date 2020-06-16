@@ -1,1 +1,40 @@
-Acá comienza la sección 1.
+Comenzamos exponiendo un ejemplo concreto de los dos problemas principales de aprendizaje supervisado: regresión y clasificación.
+
+\subsection{Problema de Regresión}
+
+Consideremos que se tiene un registro de cuán enojada está una persona en función del volumen en el que habla. Es decir, para una cierta medición $i$, se registró que el volumen de voz de una persona era $x^{(i)}$ (en decibeles) y dicha persona se encontraba enojada un valor $y^{(i)}$ en una escala continua de 1 a 10 (donde 1 es "nada enojada" y 10 es "extremadamente enojada"). Esta tarea es un ejemplo de \textbf{detección de emociones}, muy común en el área de procesamiento de señales de voz.
+
+En la figura \ref{fig:emotion detection dataset} se muestra un gráfico de un conjunto de $N$ mediciones de este tipo. En el eje horizontal se representa la variable $x$, conocida como \textbf{entrada} y en el eje vertical, la variable $y$, comunmente llamada \textbf{etiqueta}. Cada punto del gráfico representa una medición o \textbf{ejemplo}, y el conjunto de todos los ejemplos constituye el \textbf{conjunto de entrenemiento} $\Scal = \datasup{x}{y}$. Cuando se tiene un conjunto de estas características (es decir, compuesto por una entrada y su etiqueta) se dice que el aprendizaje es \textbf{supervisado}.
+
+\begin{figure}[h]
+\centering
+%\includegraphics[width=.5\textwidth]{emotion_detection_data_regression}
+\caption{Conjunto de datos detección de emociones}
+\label{fig:emotion detection dataset regression}
+\end{figure}
+
+Nuestro objetivo será, entonces, predecir los valores de enojo de nuevas entradas, es decir, de valores de $x$ que no aparecieron en el conjunto de entrenamiento. Mas formalmente, queremos obtener una función $\hat{h}(x)$ a partir de $\Scal$ que devuelva un valor continuo entre 1 y 10 que represente el valor de enojo de una persona cuyo volumen de voz medido fue $x$ decibeles. Además, vamos a querer definir una medida de "cuán buena" es la función encontrada. Más adelante  veremos que hay muchas maneras de definir el grado de desempeño de esta función, pero siempre se rá en función de nuevos ejemplos, no de los que pertenecen al conjunto de entrenamiento.
+
+Los problemas en que se buscan predecir valores pertenecientes a un espacio continuo, como es el ejemplo anterior, son problemas de \textbf{regresión}. Notemos que en esta definición no consideramos las propiedades de la variable de entrada $x$, la cual, en principio, puede pertenecer a un espacio continuo o discreto, unidimensional o multidimensional, o incluso categórico. Por ejemplo, siguiendo con el ejemplo de detección de emociones, podríamos haber dispuesto desde un principio, no sólo del volumen de la persona sino también de la frecuencia pico máxima detectada. En ese caso, la entrada correspondería con un vector $\xbf \in \Rbb^2$ en donde la primera componente representa el volumen en decibeles de la medición y la segunda, la frecuencia pico máxima en hertz. Cuando el vector $\xbf$ está compuesto por una serie de variables que representan una magnitud concreta, suele denominarse vector de \textbf{features} o características, y el espacio al que pertenece, \textbf{espacio de features}. Además, vale la pena mencionar que es muy comun disponer de un conjunto de datos en el que estas características fueron extraídas manualmente de una medición. Es decir, es más común obtener disponible un conjunto de datos de señales de voz y su correspondiente valor de enojo, que directamente el volumen o frecuencia pico máxima de dicha señal. Por eso, el proceso de predicción (o sea, de obtención de la función $\hat{h}(x)$) viene precedido por una etapa de \textbf{extracción de características} de los datos, que muchas veces tiene un peso muy importante en el desempeño final al algoritmo.
+
+
+\subsection{Problema de clasificación}
+
+Ahora supongamos el mismo problema que antes, con la única diferencia que en lugar de querer obtener un valor de enojo en una escala continua, se desea tomar la decisión de si el el hablante se encuentra enojado o no. Es decir, el conjunto de datos de entrenamiento disponible ahora consiste en un conjunto $\calS = \datasup{\xbf}{y}$ en donde $\xbf$ es un vector de características como antes y el escalar $y$ ahora puede adoptar dos únicos valores: "enojado" o "no enojado". 
+
+En la figura \ref{fig:emotion detection dataset classification} se muestra un conjunto de ejemplos utilizados en este problema. Los ejes del gráfico representan las componentes del vector $\xbf$ y cada punto pertenece a exactamente una de las categorías antes mencionadas. 
+
+\begin{figure}[h]
+\centering
+%\includegraphics[width=.5\textwidth]{emotion_detection_data_classification}
+\caption{Conjunto de datos para detección de emociones}
+\label{fig:emotion detection dataset classification}
+\end{figure}
+
+El caso en que el espacio al cual se mapean los valores de la función $\hat{h}(x)$ es categórico se conoce como \textbf{problema de clasificación}. En este caso, el problema sigue siendo de aprendizaje supervisado, puesto que las etiquetas siguen estando. 
+
+\subsection{•}
+
+
+
+
