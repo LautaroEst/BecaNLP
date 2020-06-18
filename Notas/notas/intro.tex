@@ -1,6 +1,15 @@
-Comenzamos exponiendo un ejemplo concreto de los dos problemas principales de aprendizaje supervisado: regresión y clasificación.
+Los algoritmos de aprendizaje automático (\textit{Machine Learning}) tienen por objetivo \textbf{aprender de los datos}. Dada la facilidad con la que se pueden disponer de gran cantidad de datos actualmente, este área ha crecido mucho en los últimos años y se utiliza actualmente en industria e investigación, presentando muy buenos (a veces, los mejores) resultados. Ahora, ¿qué significa "aprender de los datos"? Más adelante analizaremos una aproximación formal a esta definición, pero la idea general es que las personas y la naturaleza generan eventos cuantificables de los cuales pueden llevarse un registro. Aquí vemos algunos ejemplos:
+\begin{itemize}
+\item Ejemplo 1...
+\end{itemize}
 
-\subsection{Problema de Regresión}
+En principio, es posible pensar que puede extraerse información útil de cada uno de estos registros de datos, pudiendo incluír en ella algunas características de los datos que aún no se han registrado. Este proceso por el cual se extrae información de un conjunto de datos, que también sirve para caracterizar otros datos similares que aún no se han visto se conoce como \textbf{aprendizaje}, o "aprender de los datos". Y esto es precisamente lo que buscamos hacer.
+
+Vamos a separar en dos tipos de conjuntos de datos: los que contienen una etiqueta por cada ejemplo o muestra y los que no. En los ejemplos anteriores...
+
+Comenzamos la formalización de todas estas ideas exponiendo un ejemplo concreto de los dos tipos de problemas que componen el aprendizaje supervisado: regresión y clasificación.
+
+\subsection{Regresión y Clasificación}
 
 Consideremos que se tiene un registro de cuán enojada está una persona en función del volumen en el que habla. Es decir, para una cierta medición $i$, se registró que el volumen de voz de una persona era $x^{(i)}$ (en decibeles) y dicha persona se encontraba enojada un valor $y^{(i)}$ en una escala continua de 1 a 10 (donde 1 es "nada enojada" y 10 es "extremadamente enojada"). Esta tarea es un ejemplo de \textbf{detección de emociones}, muy común en el área de procesamiento de señales de voz.
 
@@ -18,9 +27,7 @@ Nuestro objetivo será, entonces, predecir los valores de enojo de nuevas entrad
 Los problemas en que se buscan predecir valores pertenecientes a un espacio continuo, como es el ejemplo anterior, son problemas de \textbf{regresión}. Notemos que en esta definición no consideramos las propiedades de la variable de entrada $x$, la cual, en principio, puede pertenecer a un espacio continuo o discreto, unidimensional o multidimensional, o incluso categórico. Por ejemplo, siguiendo con el ejemplo de detección de emociones, podríamos haber dispuesto desde un principio, no sólo del volumen de la persona sino también de la frecuencia pico máxima detectada. En ese caso, la entrada correspondería con un vector $\xbf \in \Rbb^2$ en donde la primera componente representa el volumen en decibeles de la medición y la segunda, la frecuencia pico máxima en hertz. Cuando el vector $\xbf$ está compuesto por una serie de variables que representan una magnitud concreta, suele denominarse vector de \textbf{features} o características, y el espacio al que pertenece, \textbf{espacio de features}. Además, vale la pena mencionar que es muy comun disponer de un conjunto de datos en el que estas características fueron extraídas manualmente de una medición. Es decir, es más común obtener disponible un conjunto de datos de señales de voz y su correspondiente valor de enojo, que directamente el volumen o frecuencia pico máxima de dicha señal. Por eso, el proceso de predicción (o sea, de obtención de la función $\hat{h}(x)$) viene precedido por una etapa de \textbf{extracción de características} de los datos, que muchas veces tiene un peso muy importante en el desempeño final al algoritmo.
 
 
-\subsection{Problema de clasificación}
-
-Ahora supongamos el mismo problema que antes, con la única diferencia que en lugar de querer obtener un valor de enojo en una escala continua, se desea tomar la decisión de si el el hablante se encuentra enojado o no. Es decir, el conjunto de datos de entrenamiento disponible ahora consiste en un conjunto $\calS = \datasup{\xbf}{y}$ en donde $\xbf$ es un vector de características como antes y el escalar $y$ ahora puede adoptar dos únicos valores: "enojado" o "no enojado". 
+Ahora supongamos el mismo problema que antes, con la única diferencia que en lugar de querer obtener un valor de enojo en una escala continua, se desea tomar la decisión de si el el hablante se encuentra enojado o no. Es decir, el conjunto de datos de entrenamiento disponible ahora consiste en un conjunto $\Scal = \datasup{\xbf}{y}$ en donde $\xbf$ es un vector de características como antes y el escalar $y$ ahora puede adoptar dos únicos valores: "enojado" o "no enojado". 
 
 En la figura \ref{fig:emotion detection dataset classification} se muestra un conjunto de ejemplos utilizados en este problema. Los ejes del gráfico representan las componentes del vector $\xbf$ y cada punto pertenece a exactamente una de las categorías antes mencionadas. 
 
@@ -33,7 +40,13 @@ En la figura \ref{fig:emotion detection dataset classification} se muestra un co
 
 El caso en que el espacio al cual se mapean los valores de la función $\hat{h}(x)$ es categórico se conoce como \textbf{problema de clasificación}. En este caso, el problema sigue siendo de aprendizaje supervisado, puesto que las etiquetas siguen estando. 
 
-\subsection{•}
+\subsection{Ejemplos conocidos: cuadrados mínimos y Discriminante de Fisher}
+
+Hasta ahora hemos planteado el problema y la nomenclatura que vamos a usar, pero no dijimos cómo obtener el algoritmo de aprendizaje. 
+
+\subsection{Formalización del problema}
+
+Definición de learning en general. Modelización de caja negra para el caso supervisado. Diferentes aproximaciones para encontrar el algoritmo: modelos probabilísticos (ideales, como el filtro de Wienner y aproximados, como los de ERM), modelos por discriminantes como Fisher o SVM (esto es así???). Decir al final de todo que nosotros queremos resolver siempre un problema de regresión, ya que el problema de clasificación es equivalente a uno de regresión y después agregarle una función de decisión. 
 
 
 
