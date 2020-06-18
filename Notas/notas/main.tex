@@ -1,0 +1,47 @@
+\documentclass[12pt]{article}
+
+% Input encoding:
+\usepackage[utf8]{inputenc}
+
+
+% Idioma español:
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[autostyle=false,style=american]{csquotes}
+\MakeOuterQuote{"}
+
+
+% Gráficos e imágenes:
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Layout de la página:
+\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm,bindingoffset=6mm]{geometry}
+\usepackage[bookmarks]{hyperref}
+
+% Matemática:
+\usepackage{amssymb}
+
+
+\title{\LARGE \textbf{Aprendizaje Supervisado}}
+\author{Lautaro Estienne}
+\date{Junio de 2020}
+
+\begin{document}
+
+\input{commands}
+
+\maketitle
+
+En estas notas vamos a explicar las bases para aprender a diseñar algoritmos de aprendizaje automático que se entrenan en forma supervisada. Además, se explican algunos de los algoritmos que se utilizan comunmente en la práctica y que suelen dar buenos resultados, así como también los fundamentos teóricos por los cuales éstos funcionan. Se busca que, luego de haber entendido el tema, sea posible aplicar estos algoritmos y entender cómo adaptarlos al problema particular. 
+
+\section{Introducción}
+\input{intro}
+
+\section{Modelos}
+\input{modelos}
+
+\section{Learning Theory}
+\input{learning}
+
+\end{document}

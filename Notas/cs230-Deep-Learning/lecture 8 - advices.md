@@ -24,3 +24,5 @@ Para cada uno de los papers de la lista, vas anotando cúanto leiste o entendist
 5. Para entender la matemática Ng recomienda leer lo fundamental y tratar de deducirla por cuenta propia
 
 6. Y para entender el código, recomienda correr el código fuente y después tratar de implementarlo from stratch
+
+7. Un consejo de Ng es que estudies continuamente y espaciado.
