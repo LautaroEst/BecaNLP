@@ -39,6 +39,10 @@ Esto va en la parte de learning theory del resumen de supervisado.
 
 * Después empieza con todas las cosas que necesitamos para optimizar una función: inicialización de los parámetros, normalización de las entradas y gradient checking
 
+* Notebooks:
+
+	* Initializations: Las diferentes inicializaciones te cambian la forma en que aprenden los parámetros. Pueden solucionar problemas de gradiente (explosiones y desvanecimientos), reducir la cantidad de iteraciones y destruir la simetría entre los layers. La forma de inicializar los parámetros depende de la cantidad de layers y de la arquitectura en sí.
+
 
 
 

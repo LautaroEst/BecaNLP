@@ -164,6 +164,12 @@ class NeuralNetClassifier(object):
 
         """
         Función para predecir nuevas muestras.
+
+        NOTA: LA CONVENCIÓN ES QUE y_test E y_predict TIENEN LA FORMA (N,) YA SEAN
+        TORCH TENSORS O NUMPY ARRAYS. CUANDO SE USAN PARA ENTRENAR UNA RED NEURONAL
+        SE RESHEPEAN PARA TENER FORMA DE COLUMNA.
+
+
         """
 
         device = self.device
@@ -172,28 +178,23 @@ class NeuralNetClassifier(object):
 
         x, _ = dataset[0]
         scores = model(x.to(device))
-        print(scores)
-        if scores.dim() <= 2: # (N,C) o (N,)
-            if scores.dim() == 1:
-                make_predictions = lambda scores: (scores > 0).type(torch.long)
-            else:
-                make_predictions = lambda scores: scores.argmax(dim=1).view(-1,1)
+        if scores.dim() == 1: # (N,) para logistic regression
+            make_predictions = lambda scores: (scores > 0).type(torch.long)
+        elif scores.dim() == 2: # (N,C) para softmax
+            make_predictions = lambda scores: scores.argmax(dim=1)
         else:
-            # TO DO
-            raise RuntimeError('More than 2 dimensions in output scores vector. Not supported.')
+            raise RuntimeError('Score must have 1 or 2 dimensions: (N,) or (N,C).')
 
         n_samples = len(dataset)
-        print(n_samples)
         y_predict = torch.zeros(n_samples,dtype=torch.long)
-        print('y_predict',y_predict)
         with torch.no_grad():
             for i in range(n_samples):
                 x, _ = dataset[i]
                 scores = model(x.to(device))
                 y_predict[i] = make_predictions(scores)
 
-        print(y_predict)
         return y_predict
+
 
     def loss(self,scores,target):
         """

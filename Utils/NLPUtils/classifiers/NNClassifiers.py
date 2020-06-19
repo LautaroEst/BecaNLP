@@ -23,7 +23,7 @@ class LogisticRegressionClassifier(NeuralNetClassifier):
             self.linear = nn.Linear(in_features,1,bias)
             
         def forward(self,x):
-            return self.linear(x)
+            return self.linear(x).view(-1)
 
     def init_parameters(self,mean=0.,std=1.,random_state=None):
         state_dict = self.model.state_dict()
@@ -86,6 +86,32 @@ class TwoLayerLRNet(NeuralNetClassifier):
         
     def loss(self,scores,target):
         return F.binary_cross_entropy_with_logits(scores, target, reduction='mean')
+
+
+class DeepFFClassifier(NeuralNetClassifier):
+
+    def __init__(self,layers_dims,layers_biases,device='cpu'):
+        self.model = self.Model(layers_dims,layers_biases)
+        super().__init__(model,device)
+
+
+    class Model(nn.Module):
+
+        def __init__(self,layers_dims,layers_biases):
+
+            for i, l, bias in enumerate(zip(layers_dims,layers_biases),1):
+                layer = nn.Linear(layers_dims[l-1],layers_dims[l],bias=bias)
+                setattr(self,'linear' + str(i), layer)
+                # TO DO
+
+
+
+
+            
+
+
+
+
 
 
 
