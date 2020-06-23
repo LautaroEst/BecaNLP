@@ -1,0 +1,60 @@
+\documentclass{beamer}
+\usetheme{Boadilla}
+
+% Encoding characters:
+\usepackage[utf8]{inputenc} 
+
+% Texto en español:
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[autostyle=false,style=american]{csquotes}
+\MakeOuterQuote{"}
+
+% Gráficos e imágenes:
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Outline:
+\usepackage{hyperref}
+
+% Matemática:
+\usepackage{amssymb}
+
+\title{Título de la presentación}
+\subtitle{Subtítulo de la presentación}
+\author{Lautaro Estienne}
+\institute{Facultad de Ingeniería de la Universidad de Buenos Aires}
+\date{Junio de 2020}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Índice}
+\tableofcontents
+\end{frame}
+
+\section{Section 1}
+\begin{frame}
+\frametitle{Título}
+Slide 1
+\end{frame}
+
+\subsection{Subsection 1}
+\begin{frame}
+Slide 2
+\end{frame}
+
+\begin{frame}
+\onslide<1->{Texto de prueba 1}
+\onslide<2->{Texto de prueba 2}
+\onslide<3-4>{Texto de prueba 3}
+\onslide<4->{Texto de prueba 4}
+\onslide<5->{Texto de prueba 5}
+\end{frame}
+
+\end{document}
