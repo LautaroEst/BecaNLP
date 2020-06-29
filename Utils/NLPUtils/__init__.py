@@ -1,7 +1,5 @@
-from . import classifiers
+from . import classification
 from . import datasets
-
-from .vectorizers import *
-from .evaluation import *
-from .tokenizers import *
-from .utils import *
+from . import feature_extraction
+from . import preprocessing
+from . import vsm
