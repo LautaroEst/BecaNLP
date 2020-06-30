@@ -74,7 +74,7 @@ def train_dev_validation(model,train_dataset,vectorizer,**kwargs):
     return score
 
 
-def k_fold_validation(model,dataset,vectorizer,k_folds=5,random_state=0,metric='accuracy',**kwargs):
+def k_fold_validation(model,dataset,vectorizer,k_folds=5,random_state=0,metrics='accuracy',**kwargs):
 
     N_data = len(dataset)
     indices = get_kfolds_idx(N_data,k_folds,random_state)
@@ -90,7 +90,7 @@ def k_fold_validation(model,dataset,vectorizer,k_folds=5,random_state=0,metric='
         
         vectorized_dev_dataset = vectorizer.transform(dev_dataset)
         y_dev, y_predict = model.predict(vectorized_dev_dataset)
-        score = get_score(y_dev,y_predict,metric)
+        score = get_score(y_dev,y_predict,metrics)
         scores.append(score)
 
     return scores
@@ -115,6 +115,9 @@ def check_performance(y_test,y_predict,metric):
 
     elif metric == 'accuracy':
         return accuracy(y_test,y_predict)
+
+    elif metric == 'balanced_accuracy':
+        return balanced_accuracy(y_test,y_predict)
 
     elif metric == 'precision':
         return precision(y_test,y_predict)
@@ -175,6 +178,12 @@ def recall(y_test,y_predict):
     x2 = cm.sum(axis=1)
 
     return np.divide(x1,x2,where=(x2 != 0),out=out)
+
+
+def balanced_accuracy(y_test,y_predict):
+
+    rec = recall(y_test,y_predict)
+    return rec.mean()
 
 
 def f_beta_score(y_test,y_predict,beta):
