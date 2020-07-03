@@ -29,3 +29,5 @@ Utils/Datasets/*
 Libros/*
 Utils/stanford-corenlp-4.0.0/
 Utils/stanford-corenlp-latest.zip
+Experimentos/santander/02-bert/beto/pytorch_model.bin
+Experimentos/santander/pytorch_weights.tar.gz
