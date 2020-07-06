@@ -31,3 +31,8 @@ Utils/stanford-corenlp-4.0.0/
 Utils/stanford-corenlp-latest.zip
 Experimentos/santander/02-bert/beto/pytorch_model.bin
 Experimentos/santander/pytorch_weights.tar.gz
+Experimentos/santander/02-bert/.ipynb_checkpoints/bert_v4-checkpoint.ipynb
+Experimentos/santander/02-bert/bert_state_dict.bin
+Experimentos/santander/02-bert/my_dataset.csv
+Experimentos/santander/02-bert/results.csv
+Experimentos/santander/02-bert/trained_models/*
