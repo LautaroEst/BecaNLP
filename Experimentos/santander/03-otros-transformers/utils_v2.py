@@ -1,5 +1,6 @@
 import torch
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
+import torch.nn as nn
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -21,20 +22,18 @@ transformers_dict = {'beto-cased': ('dccuchile/bert-base-spanish-wwm-cased',
 
 
 def tokenize_and_split(df, max_len=128, random_state=None, batch_size=32, 
-       test_size=0.1, transformer='beto-uncased', **kwargs):
+       test_size=0.1, transformer='beto-uncased', pad_token_id=0, **kwargs):
     
     source, _, tokenizer, _ = transformers_dict[transformer]
     
-    # Tokenización:
-    sentences = ["[CLS] {} [SEP]".format(query) for query in df['Pregunta']]
+    # Tokenización y padding de los inputs:
+    cls_token = kwargs.pop('cls_token','[CLS]')
+    sep_token = kwargs.pop('sep_token','[SEP]')
+    sentences = ["{} {} {}".format(cls_token,query,sep_token) for query in df['Pregunta']]
     tokenizer = tokenizer.from_pretrained(source, **kwargs)
     tokenized_texts = [tokenizer.tokenize(sent) for sent in sentences]
-    
-    # Padding de las oraciones:
     input_ids = pad_sequences([tokenizer.convert_tokens_to_ids(txt) for txt in tokenized_texts],
-                              maxlen=max_len, dtype="long", truncating="post", padding="post")
-    input_ids = [tokenizer.convert_tokens_to_ids(x) for x in tokenized_texts]
-    input_ids = pad_sequences(input_ids, maxlen=max_len, dtype="long", truncating="post", padding="post")
+                              maxlen=max_len, dtype="long", truncating="post", padding="post",value=pad_token_id)
     
     # Máscaras de atención:
     attention_masks = []
@@ -160,6 +159,9 @@ def train(model, train_dataloader, validation_dataloader, optimizer, scheduler, 
             tr_loss += loss.item()
             nb_tr_examples += b_input_ids.size(0)
             nb_tr_steps += 1
+            
+            if step % 2 == 0:
+                print(step)
 
         score = validate_model(model,validation_dataloader,device,metrics)
         print(score)
