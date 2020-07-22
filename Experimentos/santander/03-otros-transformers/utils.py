@@ -9,13 +9,17 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 from transformers import AdamW, get_linear_schedule_with_warmup, AdamWeightDecay
 from tqdm import tqdm, trange
 
-def process_dataset(df, max_len=128, random_state=None, batch_size=32, test_size=0.1, **kwargs):
+def process_dataset_for_beto(df, max_len=128, random_state=None, batch_size=32, test_size=0.1, cased=False, **kwargs):
     
     # Preprocesamos las muestras
     sentences = ["[CLS] {} [SEP]".format(query) for query in df['Pregunta']]
 
     # Tokenizamos las oraciones
-    tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', **kwargs)
+    if cased:
+        s = "dccuchile/bert-base-spanish-wwm-cased"
+    else:
+        s = "dccuchile/bert-base-spanish-wwm-uncased"
+    tokenizer = BertTokenizer.from_pretrained(s, **kwargs)
     tokenized_texts = [tokenizer.tokenize(sent) for sent in sentences]
     
     MAX_LEN = max_len # Máxima longitud de las secuencias
@@ -39,7 +43,7 @@ def process_dataset(df, max_len=128, random_state=None, batch_size=32, test_size
         
     if test_size == 0.:
         train_inputs, validation_inputs, train_labels, validation_labels = input_ids, input_ids, labels, labels
-        train_masks, validation_masks = attention_masks, input_ids
+        train_masks, validation_masks = attention_masks, attention_masks
     else:        
         train_inputs, validation_inputs, train_labels, validation_labels = train_test_split(input_ids, labels, 
                                                                     random_state=random_state, test_size=test_size)
@@ -65,9 +69,14 @@ def process_dataset(df, max_len=128, random_state=None, batch_size=32, test_size
     return train_dataloader, validation_dataloader
 
 
-def load_classification_model(use_gpu, config):
+def load_beto_model(use_gpu, config, cased=False):
     
-    model = BertForSequenceClassification.from_pretrained("dccuchile/bert-base-spanish-wwm-uncased", config=config)
+    if cased:
+        s = "dccuchile/bert-base-spanish-wwm-cased"
+    else:
+        s = "dccuchile/bert-base-spanish-wwm-uncased"
+    
+    model = BertForSequenceClassification.from_pretrained(s, config=config)
     device = torch.device('cuda:1') if torch.cuda.is_available() and use_gpu else torch.device('cpu')
     model = model.to(device)
     return model, device
@@ -240,14 +249,18 @@ def train2(model,train_dataloader, validation_dataloader, optimizer, scheduler, 
     return train_loss_set
     
     
-def get_test_results(input_filename,output_filename,model,device):
+def get_test_results(input_filename,output_filename,model,device,cased=False):
     
     # Preprocesamos las muestras
     df_test = pd.read_csv(input_filename)
     sentences = ["[CLS] {} [SEP]".format(query) for query in df_test['Pregunta']]
 
     # Tokenizamos las oraciones
-    tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', do_lower_case=True)
+    if cased:
+        s = "dccuchile/bert-base-spanish-wwm-cased"
+    else:
+        s = "dccuchile/bert-base-spanish-wwm-uncased"
+    tokenizer = BertTokenizer.from_pretrained(s, do_lower_case=True)
     tokenized_texts = [tokenizer.tokenize(sent) for sent in sentences]
     
     MAX_LEN = 128 # Máxima longitud de las secuencias
