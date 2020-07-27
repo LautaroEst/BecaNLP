@@ -36,3 +36,5 @@ Experimentos/santander/02-bert/bert_state_dict.bin
 Experimentos/santander/02-bert/my_dataset.csv
 Experimentos/santander/02-bert/results.csv
 Experimentos/santander/02-bert/trained_models/*
+Programs/26-mercado-libre-api/data/*
+Programs/26-mercado-libre-api/data.tar.gz
