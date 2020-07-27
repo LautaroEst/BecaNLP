@@ -3,21 +3,33 @@ sys.path.append('python-sdk/lib/')
 from meli import Meli
 import pandas as pd
 from tqdm import tqdm
+import json
 
+countries_ids = {'Argentina': 'MLA', 'Colombia': 'MCO', 'Dominicana': 'MRD',
+                 'Guatemala': 'MGT','Nicaragua': 'MNI', 'Perú ': 'MPE',
+                 'Bolivia': 'MBO', 'Costa Rica': 'MCR', 'Ecuador': 'MEC',
+                 'Honduras': 'MHN', 'Panamá': 'MPA', 'Uruguay': 'MLU',
+                 'Chile': 'MLC', 'El Salvador': 'MSV', 'Mexico': 'MLM',
+                 'Paraguay': 'MPY', 'Venezuela': 'MLV', 'Brasil': 'MLB'}
 
 def main():
     
     meli = Meli(client_id=1234, client_secret="a secret")
-    countries_ids = {d['name']:d['id'] for d in meli.get('sites/').json()}
+    #countries_ids = {d['name']:d['id'] for d in meli.get('sites/').json()}
     for name, country_id in countries_ids.items():
         reviews_dict = {'product_id': [], 'category_id': [], 'content': [], 'rate': [], 'valorization': []}
         categories = meli.get('sites/{}/categories/all'.format(country_id)).json()
         print('País:',name)
         for category_id in tqdm(categories.keys()):
-            products = meli.get('sites/{}/search?category={}'.format(country_id,category_id)).json()['results']
+            for i in range(5):
+                try:
+                    products = meli.get('sites/{}/search?category={}'.format(country_id,category_id)).json()['results']
+                    break
+                except (KeyError, json.decoder.JSONDecodeError) as e:
+                    print('Error')
             for product in products:
                 product_id = product['id']
-                reviews = meli.get('/reviews/search?item_id={}&limit=5&order_criteria=valorization'.format(product_id)).json()['results']
+                reviews = meli.get('/reviews/search?item_id={}&limit=100&order_criteria=valorization'.format(product_id)).json()['results']
                 for review in reviews:
                     reviews_dict['product_id'].append(product_id)
                     reviews_dict['category_id'].append(category_id)
@@ -29,6 +41,7 @@ def main():
         
 if __name__ == '__main__':
     main()
+    
     
     
     
