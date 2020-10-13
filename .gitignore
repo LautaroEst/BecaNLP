@@ -41,3 +41,5 @@ mynlp
 Programs/26-mercado-libre-api/*/*.csv
 Programs/26-mercado-libre-api/*.csv
 Programs/26-mercado-libre-api/*.tar.gz
+!Programs/26-mercado-libre-api/reviews_esp.csv
+!Programs/26-mercado-libre-api/reviews_por.csv
