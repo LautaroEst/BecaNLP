@@ -50,3 +50,5 @@ Programs/26-mercado-libre-api/lid.176.bin
 Programs/27-mercado-libre-api-v2/parts.tar.gz
 Programs/26-mercado-libre-api/prod_ids.csv
 Programs/28-melisa/parts/*
+Programs/28-melisa/data_esp_sample.csv
+Programs/28-melisa/data_por_sample.csv
