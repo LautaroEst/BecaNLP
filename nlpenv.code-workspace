@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "Utils/NLPUtils"
+		},
+		{
+			"path": "Programs"
+		},
+		{
+			"path": "Notas"
+		},
+		{
+			"path": "../nlp_feature_extraction"
+		}
+	],
+	"settings": {
+		"python.pythonPath": "/home/lestien/anaconda3/envs/nlpenv/bin/python"
+	}
+}
