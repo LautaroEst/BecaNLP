@@ -9,7 +9,7 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {1}Introducción}{5}{chapter.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.1}Seccion 1}{5}{section.1.1}%
+\contentsline {section}{\numberline {1.1}Procesamiento del Lenguaje Natural}{5}{section.1.1}%
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {2}Título del capítulo 2}{6}{chapter.2}%
 \defcounter {refsection}{0}\relax 

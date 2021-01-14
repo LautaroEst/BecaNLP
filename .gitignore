@@ -52,3 +52,8 @@ Programs/26-mercado-libre-api/prod_ids.csv
 Programs/28-melisa/parts/*
 Programs/28-melisa/data_esp_sample.csv
 Programs/28-melisa/data_por_sample.csv
+Programs/28-melisa/data_esp_full.csv
+Programs/28-melisa/data_por_full.csv
+Programs/28-melisa/**/*.csv
+Programs/27-mercado-libre-api-v2/**/*.csv
+Programs/29-mercado-libre-api-v3/**/*.csv

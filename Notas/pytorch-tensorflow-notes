@@ -1,0 +1,184 @@
+{
+ "metadata": {
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.5-final"
+  },
+  "orig_nbformat": 2,
+  "kernelspec": {
+   "name": "python3",
+   "display_name": "Python 3",
+   "language": "python"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2,
+ "cells": [
+  {
+   "source": [
+    "# Notas de Pytorch y Tensorflow\n",
+    "\n",
+    "Ver tutoriales de Tensorflow, la sección [Tensorflow Basics](https://www.tensorflow.org/guide/eager)."
+   ],
+   "cell_type": "markdown",
+   "metadata": {}
+  },
+  {
+   "source": [
+    "## Tensores\n",
+    "\n",
+    "En Pytorch, la clase principal es `torch.Tensor`, la cual se puede instanciar de muchas formas y tiene un flag `requires_grad` que permite definir si el tensor va a ser una variable o una constante. Cuando defino un módulo, le asigno una serie de objetos de tipo `torch.nn.parameter.Parameter` que son subclases de `torch.Tensor` y que sirven para interactuar con la clase `nn.Module`.\n",
+    "\n",
+    "En Tensorflow, no es tan simple. No hay una clase `tf.Tensor` (bah, en realidad sí pero no tiene la misma función que `torch.Tensor`). En cambio, un tensor puede ser una constante (clase `tf.Tensor`) o una variable (clase `tf.Variable`). La diferencia entre ambas es que una constante es inmutable y una variable, no. Además, la variable puede estar en modo \"diferenciable\", lo cual se regula con el flag `trainable` y puede ahorrar computo."
+   ],
+   "cell_type": "markdown",
+   "metadata": {}
+  },
+  {
+   "source": [
+    "*Most ops, like tf.matmul and tf.reshape take arguments of class tf.Tensor. However, you'll notice in the above case, Python objects shaped like tensors are accepted.*\n",
+    "\n",
+    "*Most, but not all, ops call convert_to_tensor on non-tensor arguments. There is a registry of conversions, and most object classes like NumPy's ndarray, TensorShape, Python lists, and tf.Variable will all convert automatically.*\n",
+    "\n",
+    "*See tf.register_tensor_conversion_function for more details, and if you have your own type you'd like to automatically convert to a tensor.*"
+   ],
+   "cell_type": "markdown",
+   "metadata": {}
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "stream",
+     "name": "stdout",
+     "text": [
+      "<tf.Variable 'Variable:0' shape=(3,) dtype=int32, numpy=array([1, 2, 3], dtype=int32)>\ntf.Tensor([1 2 3], shape=(3,), dtype=int32)\ntf.Tensor([[1 2 3]], shape=(1, 3), dtype=int32)\ntf.Tensor([[1 2 3]], shape=(1, 3), dtype=int32)\n"
+     ]
+    }
+   ],
+   "source": [
+    "import tensorflow as tf\n",
+    "\n",
+    "a = tf.Variable([1,2,3])\n",
+    "b = tf.constant([1,2,3])\n",
+    "print(a)\n",
+    "print(b)\n",
+    "print(tf.reshape(b,(1,3)))\n",
+    "print(tf.reshape(a,(1,3)))"
+   ]
+  },
+  {
+   "source": [
+    "## Diferenciación automática"
+   ],
+   "cell_type": "markdown",
+   "metadata": {}
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "stream",
+     "name": "stdout",
+     "text": [
+      "tf.Tensor([1. 2. 3. 4.], shape=(4,), dtype=float32)\n<tf.Variable 'Variable:0' shape=(1,) dtype=float32, numpy=array([0.75], dtype=float32)>\n<tf.Variable 'Variable:0' shape=(1,) dtype=float32, numpy=array([-0.1], dtype=float32)>\n"
+     ]
+    }
+   ],
+   "source": [
+    "import tensorflow as tf\n",
+    "\n",
+    "x = tf.constant([1,2,3,4],dtype=tf.float32)\n",
+    "params = {\n",
+    "    'W': tf.Variable([1.],trainable=True),\n",
+    "    'b': tf.Variable([0.],trainable=True)\n",
+    "}\n",
+    "\n",
+    "def model(x,params):\n",
+    "    return tf.reduce_mean(x * params['W'] + params['b'])\n",
+    "\n",
+    "# Forward pass:\n",
+    "with tf.GradientTape() as tape:\n",
+    "    y = model(x,params)\n",
+    "\n",
+    "# Backpropagation:\n",
+    "dW, db = tape.gradient(y,params.values())\n",
+    "\n",
+    "# Update\n",
+    "alpha = .1\n",
+    "params['W'].assign(params['W'] - alpha * dW)\n",
+    "params['b'].assign(params['b'] - alpha * db)\n",
+    "\n",
+    "print(x)\n",
+    "for param in params.values():\n",
+    "    print(param)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "stream",
+     "name": "stdout",
+     "text": [
+      "tensor([1., 2., 3., 4.])\nNone\ntensor(1., requires_grad=True)\ntensor(2.5000)\ntensor(0., requires_grad=True)\ntensor(1.)\n"
+     ]
+    }
+   ],
+   "source": [
+    "import torch\n",
+    "\n",
+    "x = torch.tensor([1,2,3,4],dtype=torch.float32,requires_grad=False)\n",
+    "params = {\n",
+    "    'W': torch.tensor(1.,requires_grad=True),\n",
+    "    'b': torch.tensor(0.,requires_grad=True)\n",
+    "}\n",
+    "\n",
+    "def model(x,params):\n",
+    "    return torch.mean(x * params['W'] + params['b'])\n",
+    "\n",
+    "# Froward pass:\n",
+    "y = model(x,params)\n",
+    "\n",
+    "# Backpropagation:\n",
+    "y.backward()\n",
+    "dW = params['W'].grad\n",
+    "db = params['b'].grad\n",
+    "\n",
+    "print(x)\n",
+    "print(x.grad)\n",
+    "for param in params.values():\n",
+    "    print(param)\n",
+    "    print(param.grad)\n",
+    "\n",
+    "# Update\n",
+    "alpha = .1\n",
+    "params['W'] = params['W'] - alpha * dW\n",
+    "params['b'] = params['b'] - alpha * db"
+   ]
+  },
+  {
+   "source": [
+    "Una diferencia importante a tener en cuenta de lo anterior es que tensorflow separa los gradientes de las variables en dos objetos distintos. En pytorch, el gradiente se guarda en el mismo tensor bajo la variable interna `grad`.\n",
+    "\n",
+    "En Pytorch, las variables que quiero actualizar se guardan en un optimizador, de manera que en cada actualización se llama a `optimizer.step()` y listo. En Tensorflow, por el contrario, este optimizador se hace diciéndole al `tape` qué variables quiero observar. "
+   ],
+   "cell_type": "markdown",
+   "metadata": {}
+  }
+ ]
+}

@@ -1,16 +1,16 @@
-[1] Config.pm:304> INFO - This is Biber 2.14 (beta)
+[0] Config.pm:304> INFO - This is Biber 2.14 (beta)
 [1] Config.pm:307> INFO - Logfile is 'main.blg'
-[401] biber:322> INFO - === dom jun 14, 2020, 13:24:52
-[455] Biber.pm:415> INFO - Reading 'main.bcf'
-[770] Biber.pm:943> INFO - Found 1 citekeys in bib section 0
-[828] Biber.pm:4256> INFO - Processing section 0
-[829] Utils.pm:75> INFO - Globbing data source 'references.bib'
-[830] Utils.pm:91> INFO - Globbed data source 'references.bib' to references.bib
-[869] Biber.pm:4455> INFO - Looking for bibtex format file 'references.bib' for section 0
-[871] bibtex.pm:1653> INFO - LaTeX decoding ...
-[882] bibtex.pm:1471> INFO - Found BibTeX data source 'references.bib'
-[1033] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[1033] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
-[1033] Biber.pm:4084> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'es-ES'
-[1039] bbl.pm:652> INFO - Writing 'main.bbl' with encoding 'UTF-8'
-[1042] bbl.pm:755> INFO - Output to main.bbl
+[120] biber:322> INFO - === sáb dic 26, 2020, 20:44:34
+[160] Biber.pm:415> INFO - Reading 'main.bcf'
+[265] Biber.pm:943> INFO - Found 1 citekeys in bib section 0
+[313] Biber.pm:4256> INFO - Processing section 0
+[313] Utils.pm:75> INFO - Globbing data source 'references.bib'
+[313] Utils.pm:91> INFO - Globbed data source 'references.bib' to references.bib
+[327] Biber.pm:4455> INFO - Looking for bibtex format file 'references.bib' for section 0
+[327] bibtex.pm:1653> INFO - LaTeX decoding ...
+[331] bibtex.pm:1471> INFO - Found BibTeX data source 'references.bib'
+[416] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[416] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[416] Biber.pm:4084> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'es-ES'
+[419] bbl.pm:652> INFO - Writing 'main.bbl' with encoding 'UTF-8'
+[420] bbl.pm:755> INFO - Output to main.bbl
