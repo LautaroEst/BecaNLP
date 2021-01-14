@@ -55,5 +55,6 @@ Programs/28-melisa/data_por_sample.csv
 Programs/28-melisa/data_esp_full.csv
 Programs/28-melisa/data_por_full.csv
 Programs/28-melisa/**/*.csv
+Programs/28-melisa/melisa/*.tar.xz
 Programs/27-mercado-libre-api-v2/**/*.csv
 Programs/29-mercado-libre-api-v3/**/*.csv
