@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.12.26)  26 DEC 2020 20:44
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.5.24)  25 MAR 2021 17:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -219,7 +219,7 @@ Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 \bibhang=\skip65
 \blx@bcfin=\read3
 \blx@bcfout=\write3
-\blx@langwohyphens=\language10
+\blx@langwohyphens=\language85
 \c@mincomprange=\count301
 \c@maxcomprange=\count302
 \c@mincompwidth=\count303
@@ -602,58 +602,31 @@ Cap\'{\i }tulo 1.
 
 ]
 Cap\'{\i }tulo 2.
-(/home/lestien/Documents/BecaNLP/Tesis/informe/chapters/ch02.tex [6
+(/home/lestien/Documents/BecaNLP/Tesis/informe/chapters/sentiment_analysis.tex) [6
 
 ]
-Underfull \vbox (badness 2961) has occurred while \output is active []
+Cap\'{\i }tulo 3.
+(/home/lestien/Documents/BecaNLP/Tesis/informe/chapters/language_modeling.tex) [7
 
-LaTeX Info: Redefining \. on input line 19.
-LaTeX Info: Redefining \% on input line 19.
+]
+Cap\'{\i }tulo 4.
+(/home/lestien/Documents/BecaNLP/Tesis/informe/chapters/last_task.tex) [8
 
+]
+Cap\'{\i }tulo 5.
+(/home/lestien/Documents/BecaNLP/Tesis/informe/chapters/results.tex) [9
 
-Package Fancyhdr Warning: \headheight is too small (12.0pt): 
-Make it at least 15.71667pt.
-We now make it that large for the rest of the document.
-This may cause the page layout to be inconsistent, however.
+]
+Cap\'{\i }tulo 6.
+(/home/lestien/Documents/BecaNLP/Tesis/informe/chapters/conclusions.tex) [10
 
-[7]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-LaTeX Info: Redefining \. on input line 22.
-LaTeX Info: Redefining \% on input line 22.
- [8]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-LaTeX Info: Redefining \. on input line 28.
-LaTeX Info: Redefining \% on input line 28.
- [9]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-LaTeX Info: Redefining \. on input line 34.
-LaTeX Info: Redefining \% on input line 34.
- [10]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-LaTeX Info: Redefining \. on input line 37.
-LaTeX Info: Redefining \% on input line 37.
- [11]
-Underfull \vbox (badness 2961) has occurred while \output is active []
-
-LaTeX Info: Redefining \. on input line 45.
-LaTeX Info: Redefining \% on input line 45.
- [12]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-LaTeX Info: Redefining \. on input line 50.
-LaTeX Info: Redefining \% on input line 50.
- [13])
-LaTeX Info: Redefining \. on input line 71.
-LaTeX Info: Redefining \% on input line 71.
- [14]
+]
 Ap\'{e}ndice A.
-(/home/lestien/Documents/BecaNLP/Tesis/informe/chapters/appA.tex) [15
+(/home/lestien/Documents/BecaNLP/Tesis/informe/chapters/appA.tex)
 
-] [16
+LaTeX Warning: Empty bibliography on input line 86.
+
+[11
 
 ] (/home/lestien/Documents/BecaNLP/Tesis/informe/main.lof
 LaTeX Info: Redefining \. on input line 2.
@@ -662,7 +635,7 @@ LaTeX Info: Redefining \% on input line 2.
 \tf@lof=\write6
 \openout6 = `main.lof'.
 
- [17
+ [12
 
 ] (/home/lestien/Documents/BecaNLP/Tesis/informe/main.lot
 LaTeX Info: Redefining \. on input line 2.
@@ -671,36 +644,36 @@ LaTeX Info: Redefining \% on input line 2.
 \tf@lot=\write7
 \openout7 = `main.lot'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 88.
- [18
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 100.
+ [13
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 88.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 100.
  (/home/lestien/Documents/BecaNLP/Tesis/informe/main.aux
 LaTeX Info: Redefining \. on input line 28.
 LaTeX Info: Redefining \% on input line 28.
 )
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 88.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 88.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 100.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 100.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 4FBE72C7C64AAEB2BC91C69FC8EC5EF1;647.
+(rerunfilecheck)             Checksum: 0EDD733E66148D9D7E07DC06F885E57A;1034.
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 15878 strings out of 483048
- 271875 string characters out of 5962771
- 933450 words of memory out of 5000000
- 30672 multiletter control sequences out of 15000+600000
- 538849 words of font info for 48 fonts, out of 8000000 for 9000
- 85 hyphenation exceptions out of 8191
- 41i,11n,45p,2404b,1972s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on /home/lestien/Documents/BecaNLP/Tesis/informe/main.pdf (18 pages, 54476 bytes).
+ 15696 strings out of 481239
+ 268661 string characters out of 5920377
+ 930978 words of memory out of 5000000
+ 30716 multiletter control sequences out of 15000+600000
+ 538502 words of font info for 47 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 41i,4n,45p,857b,1907s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb>
+Output written on /home/lestien/Documents/BecaNLP/Tesis/informe/main.pdf (13 pages, 43076 bytes).
 PDF statistics:
- 161 PDF objects out of 1000 (max. 8388607)
- 136 compressed objects within 2 object streams
- 31 named destinations out of 1000 (max. 500000)
- 89 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 163 PDF objects out of 1000 (max. 8388607)
+ 144 compressed objects within 2 object streams
+ 30 named destinations out of 1000 (max. 500000)
+ 137 words of extra memory for PDF output out of 10000 (max. 10000000)
 

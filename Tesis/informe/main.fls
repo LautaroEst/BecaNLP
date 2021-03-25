@@ -189,11 +189,18 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
 OUTPUT /home/lestien/Documents/BecaNLP/Tesis/informe/main.toc
 INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/intro.tex
 INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/intro.tex
-INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/ch02.tex
-INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/ch02.tex
+INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/sentiment_analysis.tex
+INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/sentiment_analysis.tex
+INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/language_modeling.tex
+INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/language_modeling.tex
+INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/last_task.tex
+INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/last_task.tex
+INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/results.tex
+INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/results.tex
+INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/conclusions.tex
+INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/conclusions.tex
 INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/appA.tex
 INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/chapters/appA.tex
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmti12.tfm
 INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/main.lof
 INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/main.lof
 OUTPUT /home/lestien/Documents/BecaNLP/Tesis/informe/main.lof
@@ -207,4 +214,3 @@ INPUT /home/lestien/Documents/BecaNLP/Tesis/informe/main.run.xml
 OUTPUT /home/lestien/Documents/BecaNLP/Tesis/informe/main.run.xml
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb
-INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb
