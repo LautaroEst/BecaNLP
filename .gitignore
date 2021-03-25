@@ -58,3 +58,7 @@ Programs/28-melisa/**/*.csv
 Programs/28-melisa/melisa/*.tar.xz
 Programs/27-mercado-libre-api-v2/**/*.csv
 Programs/29-mercado-libre-api-v3/**/*.csv
+Programs/30-SBI-tokenizer/raw.tar.bz2
+Programs/30-SBI-tokenizer/eswiki-20210320-pages-articles-multistream1.xml-p1p159400.bz2
+Programs/30-SBI-tokenizer/eswiki-20210320-pages-articles-multistream1.xml-p1p159400
+Programs/30-SBI-tokenizer/files/**
