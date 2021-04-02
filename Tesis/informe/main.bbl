@@ -16,48 +16,5 @@
   {}
 \endgroup
 
-
-\refsection{0}
-  \datalist[entry]{nty/global//global/global}
-    \entry{mikolov}{article}{}
-      \name{author}{4}{}{%
-        {{hash=a2d359b12ca2fadf0b40136a73f021bb}{%
-           family={Mikolov},
-           familyi={M\bibinitperiod},
-           given={Tomas},
-           giveni={T\bibinitperiod}}}%
-        {{hash=ee3f7d7b96add98106db907e189d6c13}{%
-           family={Chen},
-           familyi={C\bibinitperiod},
-           given={Kai},
-           giveni={K\bibinitperiod}}}%
-        {{hash=a845e10cf0d792764124ce257c1e9abe}{%
-           family={Corrado},
-           familyi={C\bibinitperiod},
-           given={Gregory\bibnamedelima S.},
-           giveni={G\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
-        {{hash=4aecfb0cc2e1e3b7899129fa2a94e2b8}{%
-           family={Dean},
-           familyi={D\bibinitperiod},
-           given={Jeffrey},
-           giveni={J\bibinitperiod}}}%
-      }
-      \strng{namehash}{d4849f6d57e38d9b9846cfb360e45131}
-      \strng{fullhash}{a4d15be3b8f5de43bc85dd1366a8f398}
-      \strng{bibnamehash}{d4849f6d57e38d9b9846cfb360e45131}
-      \strng{authorbibnamehash}{d4849f6d57e38d9b9846cfb360e45131}
-      \strng{authornamehash}{d4849f6d57e38d9b9846cfb360e45131}
-      \strng{authorfullhash}{a4d15be3b8f5de43bc85dd1366a8f398}
-      \field{sortinit}{M}
-      \field{sortinithash}{2e5c2f51f7fa2d957f3206819bf86dc3}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{journaltitle}{CoRR}
-      \field{title}{Efficient Estimation of Word Representations in Vector Space}
-      \field{volume}{abs/1301.3781}
-      \field{year}{2013}
-    \endentry
-  \enddatalist
-\endrefsection
 \endinput
 
