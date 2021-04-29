@@ -120,7 +120,8 @@ def get_orig_cat_name():
 	filename = root_path + 'reviews_all.csv'
 	df = pd.read_csv(filename)
 
-	all_categories = pd.read_csv(root_path + 'catid2catname.csv',index_col='cat_id').to_dict()['category']
+	all_categories = pd.read_csv(root_path + 'catid2catname.csv',
+						index_col='cat_id').to_dict()['category']
 	df['category'] = df['cat_id'].map(all_categories)
 	return df.dropna().reset_index(drop=True)
 

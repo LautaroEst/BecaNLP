@@ -104,7 +104,7 @@ def generate_masks():
 	mask_langid.to_csv(root_path + 'mask_langid.csv',index=False)
 
 	tic = time.time()
-	mask_fasttext = detect_lang_fasttext(ds_text)
+	mask_fasttext = detect_lang_fasttext(ds_text,df)
 	toc = time.time()
 	print('fasttext:',toc-tic)
 	mask_fasttext.to_csv(root_path + 'mask_fasttext.csv',index=False)
